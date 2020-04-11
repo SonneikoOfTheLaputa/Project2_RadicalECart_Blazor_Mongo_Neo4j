@@ -19,16 +19,43 @@ namespace Radical_Ecart_UserManagementService
    [ServiceBehavior(AddressFilterMode=AddressFilterMode.Any)]
     public class UserManagementService : IUserManagementService
     {
-        public bool abc()
+        public bool Login([FromBody] User member)
         {
-            return true;
-        }
-       public bool RegisterUser([FromBody] User member)
-        {
-            bool isUserRegistered = false;
+            bool isValidUser = false;
             try
             {
-               var s= new RegisterUser().InsertUser(member);
+                isValidUser = new RegisterUser().Login(member);
+            }
+            catch(System.Exception ex)
+            {
+                StackFrame frame = null;
+                int line = 0;
+                LogData.GetFrameDetails(ex, out frame, out line);
+                LogData.LogExceptionData(ex.Message, frame.GetFileName(), ex.InnerException != null ? ex.InnerException.Message : "No InnerException", line.ToString(), frame.GetMethod().Name);
+            }
+            return isValidUser;
+        }
+        public bool CheckUserId([FromBody] string userId)
+        {
+            bool isPresent = false;
+            try
+            {
+                isPresent = new RegisterUser().CheckUserId(userId);
+            }
+            catch (System.Exception ex)
+            {
+                StackFrame frame = null;
+                int line = 0;
+                LogData.GetFrameDetails(ex, out frame, out line);
+                LogData.LogExceptionData(ex.Message, frame.GetFileName(), ex.InnerException != null ? ex.InnerException.Message : "No InnerException", line.ToString(), frame.GetMethod().Name);
+            }
+            return isPresent;
+        }
+        public Tuple<int,string> RegisterUser([FromBody] User member)
+        {
+            try
+            {
+               return new RegisterUser().InsertUser(member);                
             }
             catch(System.Exception ex)
             {
@@ -37,7 +64,7 @@ namespace Radical_Ecart_UserManagementService
                 LogData.GetFrameDetails(ex, out frame, out line);
                 LogData.LogExceptionData(ex.Message,frame.GetFileName(),ex.InnerException!=null?ex.InnerException.Message:"No InnerException",line.ToString(),frame.GetMethod().Name);
             }
-            return isUserRegistered;
+            return Tuple.Create<int, string>(0, "");
         }
     }
 }

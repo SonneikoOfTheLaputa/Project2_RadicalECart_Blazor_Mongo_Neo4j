@@ -14,15 +14,22 @@ namespace Radical_Ecart_UserManagementService
     public interface IUserManagementService
     {
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/abc", RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Wrapped)]
-        bool abc();
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "/Login", RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        bool Login(User user);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json,
+    UriTemplate = "/CheckUserId", RequestFormat = WebMessageFormat.Json,
+    BodyStyle = WebMessageBodyStyle.Bare)]
+        bool CheckUserId(string userId);
+
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/RegisterUser",RequestFormat =WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        bool RegisterUser([FromBody] User member);
+        Tuple<int,string> RegisterUser([FromBody] User member);
 
         // TODO: Add your service operations here
     }
