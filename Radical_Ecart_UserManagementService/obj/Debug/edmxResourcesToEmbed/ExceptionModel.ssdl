@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExceptionDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="exception">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="ExceptionMessage" Type="varchar(max)" />
+    <Property Name="FileName" Type="varchar" MaxLength="100" />
+    <Property Name="CreatedDateTime" Type="datetime" />
+    <Property Name="LineNumber" Type="int" />
+    <Property Name="InnerExceptionMessage" Type="varchar(max)" />
+    <Property Name="MethodName" Type="varchar" MaxLength="100" />
+    <Property Name="Id" Type="varchar" MaxLength="200" Nullable="false" />
+  </EntityType>
+  <Function Name="ExceptionLog" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="exmessage" Type="varchar(max)" Mode="In" />
+    <Parameter Name="filename" Type="varchar" Mode="In" />
+    <Parameter Name="createddatetime" Type="datetime" Mode="In" />
+    <Parameter Name="lineno" Type="int" Mode="In" />
+    <Parameter Name="inner" Type="varchar(max)" Mode="In" />
+    <Parameter Name="methodname" Type="varchar" Mode="In" />
+    <Parameter Name="id" Type="varchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="ExceptionDatabaseModelStoreContainer">
+    <EntitySet Name="exception" EntityType="Self.exception" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

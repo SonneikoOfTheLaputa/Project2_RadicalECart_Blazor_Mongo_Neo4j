@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ExceptionDatabaseModelStoreContainer" CdmEntityContainer="ExceptionDatabaseEntities">
+    <EntitySetMapping Name="exceptions">
+      <EntityTypeMapping TypeName="ExceptionDatabaseModel.exception">
+        <MappingFragment StoreEntitySet="exception">
+          <ScalarProperty Name="ExceptionMessage" ColumnName="ExceptionMessage" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+          <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+          <ScalarProperty Name="InnerExceptionMessage" ColumnName="InnerExceptionMessage" />
+          <ScalarProperty Name="MethodName" ColumnName="MethodName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="ExceptionLog" FunctionName="ExceptionDatabaseModel.Store.ExceptionLog" />
+  </EntityContainerMapping>
+</Mapping>
