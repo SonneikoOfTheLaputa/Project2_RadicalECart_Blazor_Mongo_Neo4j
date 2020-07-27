@@ -39,7 +39,7 @@ namespace Radical_Ecart_UserManagementService
             var MethodName = new SqlParameter("methodname",s[4]);
             var id = new SqlParameter("id",Guid.NewGuid().ToString());
 
-            return new ObjectContext(ConfigurationManager
+           return new ObjectContext(ConfigurationManager
                 .ConnectionStrings["ExceptionDatabaseEntities"].ConnectionString).ExecuteStoreCommand
                 ("Exec ExceptionLog @exmessage,@filename,@createddatetime,@lineno,@inner,@methodname,@id",
                 ExceptionMessage, FileName, CreatedDateTime, LineNumber,
