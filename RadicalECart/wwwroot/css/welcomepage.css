@@ -1,0 +1,2067 @@
+﻿
+/*Login register button area ends*/
+.shopbtn {
+    display: block;
+    border: none;
+    background-color: red;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    padding: 5px 0;
+}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    font-family: 'Raleway', sans-serif;
+}
+
+.box {
+    display: flex;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+    background-color: #21D4FD;
+    background-image: linear-gradient(19deg, #21D4FD 0%, #B721FF 100%);
+}
+
+.login-form {
+    min-width: 250px;
+    max-width: 400px;
+    border-radius: 24px;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+    .login-form h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-top: 35px;
+    }
+
+    .login-form input[type = "text"] {
+        margin-top: 30px;
+    }
+
+    .login-form input[type = "password"] {
+        margin-top: 10px;
+    }
+
+input {
+    outline: none;
+}
+
+.links {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+    .links > a:first-of-type {
+        margin-right: 5px;
+    }
+
+    .links > a {
+        background-color: #E0E0E0;
+        border-radius: 24px;
+        font-weight: 400;
+        color: black;
+        line-height: 12px;
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        text-decoration: none;
+        font-family: 'Raleway';
+        transition: 0.25s;
+    }
+
+        .links > a:hover {
+            opacity: 0.6;
+        }
+
+.loginbtn {
+    background-color: #E0E0E0;
+    background-image: linear-gradient(19deg, #21D4FD 0%, #B721FF 100%);
+    width: 100%;
+    color: white;
+    border: none;
+    margin-top: 35px;
+    cursor: pointer;
+    padding: 10px;
+    font-family: 'Raleway', sans-seriff;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+    .loginbtn:hover {
+        opacity: 0.8;
+    }
+
+.login-form input[type = "text"]:focus, .login-form input[type = "password"]:focus {
+    border: 2px #21D4FD solid;
+}
+
+.login-form input[type = "text"], .login-form input[type = "password"] {
+    width: 100%;
+    border: none;
+    border-radius: 24px;
+    font-size: 1.5rem;
+    font-family: 'Raleway', sans-seriff;
+    background-color: gainsboro;
+    padding: 15px;
+}
+@keyframes IndexPageBtns {
+    0% {
+        background-color: red;
+    }
+
+    25% {
+        background-color: yellow;
+    }
+
+    50% {
+        background-color: lightblue;
+    }
+
+    100% {
+        background-color: lightgreen;
+    }
+}
+.divarea {
+    width: 100%;
+    display: inline-block;
+    overflow: auto;
+    margin: 0px auto;
+}
+body {
+    background: #1d1f1f;
+}
+
+svg {
+    width: 400px;
+    height: auto;
+}
+header {
+    top: 0;
+    position: fixed;
+    width: 100%;
+}
+
+.header {
+    background: #1d1f1f;margin:auto;
+    /*width: 500px;*/
+
+    text-align: center;
+}
+.contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#Izquierda,
+#Derecha {
+    visibility: hidden;
+}
+
+#Ojo-izquierdo {
+    animation: opacidad 1s 3.9s forwards;
+}
+
+#Ojo-derecho {
+    animation: opacidad 1s 3.9s forwards;
+}
+
+#poligono-1-der {
+    animation: slide-esquina-arriba-der 0.1s 1s forwards;
+}
+
+#poligono-2-der {
+    animation: slide-esquina-arriba-der 0.1s 1.1s forwards;
+}
+
+#poligono-3-der {
+    animation: slide-esquina-arriba-der 0.1s 1.2s forwards;
+}
+
+#poligono-4-der {
+    animation: slide-esquina-arriba-der 0.1s 1.3s forwards;
+}
+
+#poligono-5-der {
+    animation: slide-esquina-arriba-der 0.1s 1.3s forwards;
+}
+
+#poligono-6-der {
+    animation: slide-esquina-arriba-der 0.1s 1.4s forwards;
+}
+
+#poligono-7-der {
+    animation: slide-esquina-arriba-der 0.1s 1.4s forwards;
+}
+
+#poligono-8-der {
+    animation: slide-esquina-arriba-der 0.1s 1.4s forwards;
+}
+
+#poligono-9-der {
+    animation: slide-esquina-arriba-der 0.1s 1.5s forwards;
+}
+
+#poligono-10-der {
+    animation: slide-esquina-arriba-der 0.1s 1.6s forwards;
+}
+
+#poligono-23-der {
+    animation: slide-esquina-arriba-der 0.1s 1.1s forwards;
+}
+
+#poligono-12-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-22-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-21-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-11-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-20-der {
+    animation: slide-esquina-arriba-der 0.1s 2s forwards;
+}
+
+#poligono-19-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-15-der {
+    animation: slide-esquina-arriba-der 0.1s 2.2s forwards;
+}
+
+#poligono-13-der {
+    animation: slide-esquina-arriba-der 0.1s 2s forwards;
+}
+
+#poligono-14-der {
+    animation: slide-esquina-arriba-der 0.1s 2.2s forwards;
+}
+
+#poligono-128-der_1_ {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-16-der {
+    animation: slide-esquina-arriba-der 0.1s 2.2s forwards;
+}
+
+#poligono-127-der {
+    animation: slide-esquina-arriba-der 0.1s 3.1s forwards;
+}
+
+#poligono-139-der {
+    animation: slide-esquina-arriba-der 0.1s 3.1s forwards;
+}
+
+#poligono-17-der {
+    animation: slide-esquina-arriba-der 0.1s 3.1s forwards;
+}
+
+#poligono-124-der {
+    animation: slide-esquina-arriba-der 0.1s 3.2s forwards;
+}
+
+#poligono-125-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-138-der {
+    animation: slide-esquina-arriba-der 0.1s 3.2s forwards;
+}
+
+#poligono-137-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-140-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-143-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-144-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-145-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-146-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-181-der {
+    animation: slide-esquina-arriba-der 0.1s 3.1s forwards;
+}
+
+#poligono-126-der {
+    animation: slide-esquina-arriba-der 0.1s 3.2s forwards;
+}
+
+#poligono-190-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-180-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-133-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-134-der {
+    animation: slide-esquina-arriba-der 0.1s 3.5s forwards;
+}
+
+#poligono-116-der {
+    animation: slide-esquina-arriba-der 0.1s 3.6s forwards;
+}
+
+#poligono-18-der {
+    animation: slide-esquina-arriba-der 0.1s 3.2s forwards;
+}
+
+#poligono-123-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-135-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-136-der {
+    animation: slide-esquina-arriba-der 0.1s 3.5s forwards;
+}
+
+#poligono-141-der {
+    animation: slide-esquina-arriba-der 0.1s 3.5s forwards;
+}
+
+#poligono-142-der {
+    animation: slide-esquina-arriba-der 0.1s 3.5s forwards;
+}
+
+#poligono-184-der {
+    animation: slide-esquina-arriba-der 0.1s 3.6s forwards;
+}
+
+#poligono-187-der {
+    animation: slide-esquina-arriba-der 0.1s 3.6s forwards;
+}
+
+#poligono-118-der {
+    animation: slide-esquina-arriba-der 0.1s 3.6s forwards;
+}
+
+#poligono-119-der {
+    animation: slide-esquina-arriba-der 0.1s 3.7s forwards;
+}
+
+#poligono-122-der {
+    animation: slide-esquina-arriba-der 0.1s 3.8s forwards;
+}
+
+#poligono-121-der {
+    animation: slide-esquina-arriba-der 0.1s 3.9s forwards;
+}
+
+#poligono-120-der {
+    animation: slide-esquina-arriba-der 0.1s 4s forwards;
+}
+
+#poligono-117-der {
+    animation: slide-esquina-arriba-der 0.1s 4.1s forwards;
+}
+
+#poligono-24-der {
+    animation: slide-esquina-arriba-der 0.1s 1.1s forwards;
+}
+
+#poligono-25-der {
+    animation: slide-esquina-arriba-der 0.1s 1.2s forwards;
+}
+
+#poligono-186-der {
+    animation: slide-esquina-arriba-der 0.1s 2.1s forwards;
+}
+
+#poligono-77-der {
+    animation: slide-esquina-arriba-der 0.1s 2.2s forwards;
+}
+
+#poligono-78-der {
+    animation: slide-esquina-arriba-der 0.1s 2.4s forwards;
+}
+
+#poligono-91-der {
+    animation: slide-esquina-arriba-der 0.1s 2.2s forwards;
+}
+
+#poligono-92-der {
+    animation: slide-esquina-arriba-der 0.1s 2.3s forwards;
+}
+
+#poligono-130-der {
+    animation: slide-esquina-arriba-der 0.1s 2.4s forwards;
+}
+
+#poligono-129-der {
+    animation: slide-esquina-arriba-der 0.1s 2.4s forwards;
+}
+
+#poligono-128-der {
+    animation: slide-esquina-arriba-der 0.1s 3.5s forwards;
+}
+
+#poligono-131-der {
+    animation: slide-esquina-arriba-der 0.1s 3.6s forwards;
+}
+
+#poligono-132-der {
+    animation: slide-esquina-arriba-der 0.1s 3.7s forwards;
+}
+
+#poligono-112-der {
+    animation: slide-esquina-arriba-der 0.1s 3.8s forwards;
+}
+
+#poligono-113-der {
+    animation: slide-esquina-arriba-der 0.1s 3.9s forwards;
+}
+
+#poligono-114-der {
+    animation: slide-esquina-arriba-der 0.1s 3.3s forwards;
+}
+
+#poligono-115-der {
+    animation: slide-esquina-arriba-der 0.1s 3.4s forwards;
+}
+
+#poligono-147-der {
+    animation: slide-esquina-arriba-der 0.1s 4.2s forwards;
+}
+
+#poligono-151-der {
+    animation: slide-esquina-arriba-der 0.1s 4.2s forwards;
+}
+
+#poligono-152-der {
+    animation: slide-esquina-arriba-der 0.1s 4.3s forwards;
+}
+
+#poligono-153-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-161-der {
+    animation: slide-esquina-arriba-der 0.1s 4.3s forwards;
+}
+
+#poligono-162-der {
+    animation: slide-esquina-arriba-der 0.1s 4.3s forwards;
+}
+
+#poligono-163-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-149-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-148-der {
+    animation: slide-esquina-arriba-der 0.1s 4.5s forwards;
+}
+
+#poligono-100-der_1_ {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-189-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-150-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-156-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-155-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-154-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-160-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-168-der_1_ {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-173-der {
+    animation: slide-esquina-arriba-der 0.1s 4.7s forwards;
+}
+
+#poligono-172-der {
+    animation: slide-esquina-arriba-der 0.1s 4.5s forwards;
+}
+
+#poligono-166-der {
+    animation: slide-esquina-arriba-der 0.1s 4.5s forwards;
+}
+
+#poligono-165-der {
+    animation: slide-esquina-arriba-der 0.1s 4.5s forwards;
+}
+
+#poligono-167-der {
+    animation: slide-esquina-arriba-der 0.1s 4.7s forwards;
+}
+
+#poligono-170-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-171-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-175-der {
+    animation: slide-esquina-arriba-der 0.1s 4.7s forwards;
+}
+
+#poligono-178-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-168-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-176-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-169-der {
+    animation: slide-esquina-arriba-der 0.1s 4.7s forwards;
+}
+
+#poligono-177-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-164-der {
+    animation: slide-esquina-arriba-der 0.1s 4.4s forwards;
+}
+
+#poligono-157-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-158-der {
+    animation: slide-esquina-arriba-der 0.1s 4.7s forwards;
+}
+
+#poligono-159-der {
+    animation: slide-esquina-arriba-der 0.1s 4.6s forwards;
+}
+
+#poligono-26-der {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-35-der {
+    animation: slide-esquina-abajo 0.1s 1s forwards;
+}
+
+#poligono-37-der {
+    animation: slide-esquina-abajo 0.1s 1s forwards;
+}
+
+#poligono-38-der {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-39-der {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-40-der {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-60-der {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-41-der {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-42-der {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-36-der {
+    animation: slide-esquina-abajo 0.1s 1.11s forwards;
+}
+
+#poligono-34-der {
+    animation: slide-esquina-abajo 0.1s 1.3s forwards;
+}
+
+#poligono-33-der {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-27-der {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-28-der {
+    animation: slide-esquina-abajo 0.1s 1.3s forwards;
+}
+
+#poligono-29-der {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-59-der {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-58-der {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-57-der {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-56-der {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-71-der {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-30-der {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-43-der {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-45-der {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-53-der {
+    animation: slide-esquina-abajo 0.1s 2.5s forwards;
+}
+
+#poligono-54-der {
+    animation: slide-esquina-abajo 0.1s 2.6s forwards;
+}
+
+#poligono-55-der {
+    animation: slide-esquina-abajo 0.1s 2.7s forwards;
+}
+
+#poligono-69-der {
+    animation: slide-esquina-abajo 0.1s 2.7s forwards;
+}
+
+#poligono-44-der {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-31-der {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-32-der {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-76-der {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-179-der {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-74-der {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-75-der {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-72-der {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-73-der {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-80-der {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-182-der {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-82-der {
+    animation: slide-esquina-abajo 0.1s 3.5s forwards;
+}
+
+#poligono-81-der {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-84-der {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-83-der {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-85-der {
+    animation: slide-esquina-abajo 0.1s 3.4s forwards;
+}
+
+#poligono-79-der {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-89-der {
+    animation: slide-esquina-abajo 0.1s 3s forwards;
+}
+
+#poligono-90-der {
+    animation: slide-esquina-abajo 0.1s 3.1s forwards;
+}
+
+#poligono-93-der {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-94-der {
+    animation: slide-esquina-abajo 0.1s 4.1s forwards;
+}
+
+#poligono-88-der {
+    animation: slide-esquina-abajo 0.1s 4.1s forwards;
+}
+
+#poligono-86-der {
+    animation: slide-esquina-abajo 0.1s 4.2s forwards;
+}
+
+#poligono-87-der {
+    animation: slide-esquina-abajo 0.1s 4.3s forwards;
+}
+
+#poligono-183-der {
+    animation: slide-esquina-abajo 0.1s 4.2s forwards;
+}
+
+#poligono-111-der {
+    animation: slide-esquina-abajo 0.1s 4.3s forwards;
+}
+
+#poligono-96-der {
+    animation: slide-esquina-abajo 0.1s 4.4s forwards;
+}
+
+#poligono-95-der {
+    animation: slide-esquina-abajo 0.1s 4.4s forwards;
+}
+
+#poligono-97-der {
+    animation: slide-esquina-abajo 0.1s 4.5s forwards;
+}
+
+#poligono-98-der {
+    animation: slide-esquina-abajo 0.1s 4.6s forwards;
+}
+
+#poligono-100-der {
+    animation: slide-esquina-abajo 0.1s 4.7s forwards;
+}
+
+#poligono-105-der {
+    animation: slide-esquina-abajo 0.1s 4.6s forwards;
+}
+
+#poligono-104-der {
+    animation: slide-esquina-abajo 0.1s 4.7s forwards;
+}
+
+#poligono-101-der {
+    animation: slide-esquina-abajo 0.1s 4.8s forwards;
+}
+
+#poligono-47-der {
+    animation: slide-abajo 0.1s 5s forwards;
+}
+
+#poligono-46-der {
+    animation: slide-abajo 0.1s 5.1s forwards;
+}
+
+#poligono-49-der {
+    animation: slide-abajo 0.1s 5.2s forwards;
+}
+
+#poligono-50-der {
+    animation: slide-abajo 0.1s 5.3s forwards;
+}
+
+#poligono-51-der {
+    animation: slide-abajo 0.1s 5.3s forwards;
+}
+
+#poligono-185-der {
+    animation: slide-abajo 0.1s 5.4s forwards;
+}
+
+#poligono-61-der {
+    animation: slide-esquina-abajo 0.1s 5.5s forwards;
+}
+
+#poligono-62-der {
+    animation: slide-esquina-abajo 0.1s 5.6s forwards;
+}
+
+#poligono-63-der {
+    animation: slide-esquina-abajo 0.1s 5.7s forwards;
+}
+
+#poligono-64-der {
+    animation: slide-esquina-abajo 0.1s 5.8s forwards;
+}
+
+#poligono-65-der {
+    animation: slide-abajo 0.1s 5.9s forwards;
+}
+
+#poligono-66-der {
+    animation: slide-abajo 0.1s 6s forwards;
+}
+
+#poligono-67-der {
+    animation: slide-abajo 0.1s 6.1s forwards;
+}
+
+#poligono-68-der {
+    animation: slide-esquina-abajo 0.1s 6.2s forwards;
+}
+
+#poligono-103-der {
+    animation: slide-esquina-abajo 0.1s 6.3s forwards;
+}
+
+#poligono-102-der {
+    animation: slide-esquina-abajo 0.1s 6.4s forwards;
+}
+
+#poligono-99-der {
+    animation: slide-esquina-abajo 0.1s 6.5s forwards;
+}
+
+#poligono-48-der {
+    animation: slide-abajo 0.1s 5s forwards;
+}
+
+#poligono-106-der {
+    animation: slide-der 0.1s 6.7s forwards;
+}
+
+#poligono-107-der {
+    animation: slide-der 0.1s 6.8s forwards;
+}
+
+#poligono-108-der {
+    animation: slide-der 0.1s 6.9s forwards;
+}
+
+#poligono-109-der {
+    animation: slide-der 0.1s 7s forwards;
+}
+
+#poligono-110-der {
+    animation: slide-der 0.1s 7.1s forwards;
+}
+
+#poligono-1-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1s forwards;
+}
+
+#poligono-2-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.1s forwards;
+}
+
+#poligono-3-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.2s forwards;
+}
+
+#poligono-4-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.3s forwards;
+}
+
+#poligono-5-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.3s forwards;
+}
+
+#poligono-6-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.4s forwards;
+}
+
+#poligono-7-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.4s forwards;
+}
+
+#poligono-8-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.4s forwards;
+}
+
+#poligono-9-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.5s forwards;
+}
+
+#poligono-10-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.6s forwards;
+}
+
+#poligono-23-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.1s forwards;
+}
+
+#poligono-12-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-22-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-21-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-11-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-20-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2s forwards;
+}
+
+#poligono-19-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-15-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-13-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2s forwards;
+}
+
+#poligono-14-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-128-izq_1_ {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-16-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-127-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.1s forwards;
+}
+
+#poligono-139-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.1s forwards;
+}
+
+#poligono-17-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.1s forwards;
+}
+
+#poligono-124-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.2s forwards;
+}
+
+#poligono-125-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-138-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.2s forwards;
+}
+
+#poligono-137-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-140-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-143-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-144-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-145-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-142-izq_1_ {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-146-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-181-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.1s forwards;
+}
+
+#poligono-126-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.2s forwards;
+}
+
+#poligono-190-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-180-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-133-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-134-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.5s forwards;
+}
+
+#poligono-116-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.6s forwards;
+}
+
+#poligono-18-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.2s forwards;
+}
+
+#poligono-123-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-135-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-136-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.5s forwards;
+}
+
+#poligono-141-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.5s forwards;
+}
+
+#poligono-142-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.5s forwards;
+}
+
+#poligono-184-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.6s forwards;
+}
+
+#poligono-187-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.6s forwards;
+}
+
+#poligono-118-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.6s forwards;
+}
+
+#poligono-119-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.7s forwards;
+}
+
+#poligono-122-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.8s forwards;
+}
+
+#poligono-121-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.9s forwards;
+}
+
+#poligono-120-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4s forwards;
+}
+
+#poligono-117-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.1s forwards;
+}
+
+#poligono-24-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.1s forwards;
+}
+
+#poligono-25-izq {
+    animation: slide-esquina-arriba-izq 0.1s 1.2s forwards;
+}
+
+#poligono-186-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.1s forwards;
+}
+
+#poligono-77-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-78-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.4s forwards;
+}
+
+#poligono-91-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.2s forwards;
+}
+
+#poligono-92-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.3s forwards;
+}
+
+#poligono-130-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.4s forwards;
+}
+
+#poligono-129-izq {
+    animation: slide-esquina-arriba-izq 0.1s 2.4s forwards;
+}
+
+#poligono-128-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.5s forwards;
+}
+
+#poligono-131-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.6s forwards;
+}
+
+#poligono-132-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.7s forwards;
+}
+
+#poligono-112-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.8s forwards;
+}
+
+#poligono-113-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.9s forwards;
+}
+
+#poligono-114-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.3s forwards;
+}
+
+#poligono-115-izq {
+    animation: slide-esquina-arriba-izq 0.1s 3.4s forwards;
+}
+
+#poligono-147-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.2s forwards;
+}
+
+#poligono-151-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.2s forwards;
+}
+
+#poligono-152-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.3s forwards;
+}
+
+#poligono-153-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-161-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.3s forwards;
+}
+
+#poligono-162-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.3s forwards;
+}
+
+#poligono-163-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-149-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-148-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.5s forwards;
+}
+
+#poligono-100-izq_1_ {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-189-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-150-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-156-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-155-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-154-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-160-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-168-izq_1_ {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-173-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.7s forwards;
+}
+
+#poligono-172-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.5s forwards;
+}
+
+#poligono-166-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.5s forwards;
+}
+
+#poligono-165-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.5s forwards;
+}
+
+#poligono-167-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.7s forwards;
+}
+
+#poligono-170-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-171-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-175-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.7s forwards;
+}
+
+#poligono-178-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-168-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-176-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-169-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.7s forwards;
+}
+
+#poligono-177-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-164-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.4s forwards;
+}
+
+#poligono-157-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-158-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.7s forwards;
+}
+
+#poligono-159-izq {
+    animation: slide-esquina-arriba-izq 0.1s 4.6s forwards;
+}
+
+#poligono-26-izq {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-35-izq {
+    animation: slide-esquina-abajo 0.1s 1s forwards;
+}
+
+#poligono-37-izq {
+    animation: slide-esquina-abajo 0.1s 1s forwards;
+}
+
+#poligono-38-izq {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-39-izq {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-40-izq {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-60-izq {
+    animation: slide-esquina-abajo 0.1s 1.1s forwards;
+}
+
+#poligono-41-izq {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-42-izq {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-36-izq {
+    animation: slide-esquina-abajo 0.1s 1.11s forwards;
+}
+
+#poligono-34-izq {
+    animation: slide-esquina-abajo 0.1s 1.3s forwards;
+}
+
+#poligono-33-izq {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-27-izq {
+    animation: slide-esquina-abajo 0.1s 1.2s forwards;
+}
+
+#poligono-28-izq {
+    animation: slide-esquina-abajo 0.1s 1.3s forwards;
+}
+
+#poligono-29-izq {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-59-izq {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-58-izq {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-57-izq {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-56-izq {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-71-izq {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-30-izq {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-43-izq {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-45-izq {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-53-izq {
+    animation: slide-esquina-abajo 0.1s 2.5s forwards;
+}
+
+#poligono-54-izq {
+    animation: slide-esquina-abajo 0.1s 2.6s forwards;
+}
+
+#poligono-55-izq {
+    animation: slide-esquina-abajo 0.1s 2.7s forwards;
+}
+
+#poligono-69-izq {
+    animation: slide-esquina-abajo 0.1s 2.7s forwards;
+}
+
+#poligono-44-izq {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-31-izq {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-32-izq {
+    animation: slide-esquina-abajo 0.1s 2.2s forwards;
+}
+
+#poligono-76-izq {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-179-izq {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-74-izq {
+    animation: slide-esquina-abajo 0.1s 2.3s forwards;
+}
+
+#poligono-75-izq {
+    animation: slide-esquina-abajo 0.1s 2.4s forwards;
+}
+
+#poligono-72-izq {
+    animation: slide-esquina-abajo 0.1s 2s forwards;
+}
+
+#poligono-73-izq {
+    animation: slide-esquina-abajo 0.1s 2.1s forwards;
+}
+
+#poligono-80-izq {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-182-izq {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-82-izq {
+    animation: slide-esquina-abajo 0.1s 3.5s forwards;
+}
+
+#poligono-81-izq {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-84-izq {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-83-izq {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-85-izq {
+    animation: slide-esquina-abajo 0.1s 3.4s forwards;
+}
+
+#poligono-79-izq {
+    animation: slide-esquina-abajo 0.1s 3.3s forwards;
+}
+
+#poligono-89-izq {
+    animation: slide-esquina-abajo 0.1s 3s forwards;
+}
+
+#poligono-90-izq {
+    animation: slide-esquina-abajo 0.1s 3.1s forwards;
+}
+
+#poligono-93-izq {
+    animation: slide-esquina-abajo 0.1s 3.2s forwards;
+}
+
+#poligono-94-izq {
+    animation: slide-esquina-abajo 0.1s 4.1s forwards;
+}
+
+#poligono-88-izq {
+    animation: slide-esquina-abajo 0.1s 4.1s forwards;
+}
+
+#poligono-86-izq {
+    animation: slide-esquina-abajo 0.1s 4.2s forwards;
+}
+
+#poligono-87-izq {
+    animation: slide-esquina-abajo 0.1s 4.3s forwards;
+}
+
+#poligono-183-izq {
+    animation: slide-esquina-abajo 0.1s 4.2s forwards;
+}
+
+#poligono-111-izq {
+    animation: slide-esquina-abajo 0.1s 4.3s forwards;
+}
+
+#poligono-96-izq {
+    animation: slide-esquina-abajo 0.1s 4.4s forwards;
+}
+
+#poligono-95-izq {
+    animation: slide-esquina-abajo 0.1s 4.4s forwards;
+}
+
+#poligono-97-izq {
+    animation: slide-esquina-abajo 0.1s 4.5s forwards;
+}
+
+#poligono-98-izq {
+    animation: slide-esquina-abajo 0.1s 4.6s forwards;
+}
+
+#poligono-100-izq {
+    animation: slide-esquina-abajo 0.1s 4.7s forwards;
+}
+
+#poligono-105-izq {
+    animation: slide-esquina-abajo 0.1s 4.6s forwards;
+}
+
+#poligono-104-izq {
+    animation: slide-esquina-abajo 0.1s 4.7s forwards;
+}
+
+#poligono-101-izq {
+    animation: slide-esquina-abajo 0.1s 4.8s forwards;
+}
+
+#poligono-47-izq {
+    animation: slide-abajo 0.1s 5s forwards;
+}
+
+#poligono-46-izq {
+    animation: slide-abajo 0.1s 5.1s forwards;
+}
+
+#poligono-49-izq {
+    animation: slide-abajo 0.1s 5.2s forwards;
+}
+
+#poligono-50-izq {
+    animation: slide-abajo 0.1s 5.3s forwards;
+}
+
+#poligono-51-izq {
+    animation: slide-abajo 0.1s 5.3s forwards;
+}
+
+#poligono-185-izq {
+    animation: slide-abajo 0.1s 5.4s forwards;
+}
+
+#poligono-61-izq {
+    animation: slide-esquina-abajo 0.1s 5.5s forwards;
+}
+
+#poligono-62-izq {
+    animation: slide-esquina-abajo 0.1s 5.6s forwards;
+}
+
+#poligono-63-izq {
+    animation: slide-esquina-abajo 0.1s 5.7s forwards;
+}
+
+#poligono-64-izq {
+    animation: slide-esquina-abajo 0.1s 5.8s forwards;
+}
+
+#poligono-65-izq {
+    animation: slide-abajo 0.1s 5.9s forwards;
+}
+
+#poligono-66-izq {
+    animation: slide-abajo 0.1s 6s forwards;
+}
+
+#poligono-67-izq {
+    animation: slide-abajo 0.1s 6.1s forwards;
+}
+
+#poligono-68-izq {
+    animation: slide-esquina-abajo 0.1s 6.2s forwards;
+}
+
+#poligono-103-izq {
+    animation: slide-esquina-abajo 0.1s 6.3s forwards;
+}
+
+#poligono-102-izq {
+    animation: slide-esquina-abajo 0.1s 6.4s forwards;
+}
+
+#poligono-99-izq {
+    animation: slide-esquina-abajo 0.1s 6.5s forwards;
+}
+
+#poligono-48-izq {
+    animation: slide-abajo 0.1s 5s forwards;
+}
+
+#poligono-52-izq {
+    animation: slide-esquina-abajo 0.1s 5.1s forwards;
+}
+
+#poligono-106-izq {
+    animation: slide-izq 0.1s 6.7s forwards;
+}
+
+#poligono-107-izq {
+    animation: slide-izq 0.1s 6.8s forwards;
+}
+
+#poligono-108-izq {
+    animation: slide-izq 0.1s 6.9s forwards;
+}
+
+#poligono-109-izq {
+    animation: slide-izq 0.1s 7s forwards;
+}
+
+#poligono-110-izq {
+    animation: slide-izq 0.1s 7.1s forwards;
+}
+/*#poligono-1-izq
+  animation slide-izq 1s 1s forwards
+#poligono-2-izq
+  animation slide-der 1s 2.1s forwards
+#poligono-3-izq
+   animation slide-arriba 1s 2.1s forwards
+#poligono-23-izq
+   animation slide-esquina-arriba 1s 3.1s forwards
+#poligono-4-izq
+   animation slide-esquina-arriba 1s 3.2s forwards
+#poligono-24-izq
+   animation slide-abajo 1s 3.2s forwards
+#poligono-25-izq
+   animation slide-arriba 1s 3.4s forwards*/
+@-moz-keyframes opacidad {
+    from {
+        visibility: hidden;
+    }
+
+    to {
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes opacidad {
+    from {
+        visibility: hidden;
+    }
+
+    to {
+        visibility: visible;
+    }
+}
+
+@-o-keyframes opacidad {
+    from {
+        visibility: hidden;
+    }
+
+    to {
+        visibility: visible;
+    }
+}
+
+@keyframes opacidad {
+    from {
+        visibility: hidden;
+    }
+
+    to {
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-der {
+    from {
+        transform: translate(1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-der {
+    from {
+        transform: translate(1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-der {
+    from {
+        transform: translate(1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-der {
+    from {
+        transform: translate(1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-izq {
+    from {
+        transform: translate(-1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-izq {
+    from {
+        transform: translate(-1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-izq {
+    from {
+        transform: translate(-1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-izq {
+    from {
+        transform: translate(-1000px, 0px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-arriba {
+    from {
+        transform: translate(0px, -1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-arriba {
+    from {
+        transform: translate(0px, -1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-arriba {
+    from {
+        transform: translate(0px, -1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-arriba {
+    from {
+        transform: translate(0px, -1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-abajo {
+    from {
+        transform: translate(0px, 1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-abajo {
+    from {
+        transform: translate(0px, 1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-abajo {
+    from {
+        transform: translate(0px, 1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-abajo {
+    from {
+        transform: translate(0px, 1000px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-esquina-abajo {
+    from {
+        transform: translate(150px, 200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-esquina-abajo {
+    from {
+        transform: translate(150px, 200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-esquina-abajo {
+    from {
+        transform: translate(150px, 200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-esquina-abajo {
+    from {
+        transform: translate(150px, 200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-esquina-arriba-izq {
+    from {
+        transform: translate(-150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-esquina-arriba-izq {
+    from {
+        transform: translate(-150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-esquina-arriba-izq {
+    from {
+        transform: translate(-150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-esquina-arriba-izq {
+    from {
+        transform: translate(-150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-moz-keyframes slide-esquina-arriba-der {
+    from {
+        transform: translate(150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-webkit-keyframes slide-esquina-arriba-der {
+    from {
+        transform: translate(150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@-o-keyframes slide-esquina-arriba-der {
+    from {
+        transform: translate(150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}
+
+@keyframes slide-esquina-arriba-der {
+    from {
+        transform: translate(150px, -200px);
+    }
+
+    to {
+        transform: translate(0px, 0px);
+        visibility: visible;
+    }
+}

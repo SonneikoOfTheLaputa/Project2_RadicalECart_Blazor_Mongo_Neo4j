@@ -1,0 +1,129 @@
+﻿@page "/"
+@namespace RadicalECart.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RadicalECart</title>
+    <base href="~/" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/name.css" />
+    <link rel="icon" type="image/png" href="~/Images/radicallogo.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link id="kendoCss" rel="stylesheet" href="_content/telerik.ui.for.blazor.trial/css/kendo-theme-default/all.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i">
+    <link rel="stylesheet" href="~/css/welcomepage.css">
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" type="image/png" href="https://static.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+    <link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+    <script src="_content/telerik.ui.for.blazor.trial/js/telerik-blazor.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+     
+        setTitle = (title) => { document.title = title; };
+        function Greenborder(name) {
+            document.getElementById(name).style.backgroundColor = "light green";
+        }
+        function displayswal(msg1, msg2) {
+            swal(msg1, msg2);
+        }
+        function displayeditdetails() {
+            document.getElementById('editformdisplay').style.display = "flex";
+        }
+        function hideeditdetails() {
+            document.getElementById('editformdisplay').style.display = "none";
+        }
+        function setCookie(cname, cvalue, exmins) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exmins * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        } function delete_cookie(name) {
+            document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        function pointerevents(val) {
+            document.body.style.pointerEvents = val;
+        }
+        function displaydiv(isShow) {
+            if (isShow) {
+                document.getElementById('shippingaddress').style.display = "block";
+            }
+            else {
+                document.getElementById('shippingaddress').style.display = "none";
+            }
+        }
+        function isChecked() {
+            if (document.getElementById('shipaddr').checked)
+                return true;
+            else
+                return false;
+        }
+        function LoadText() {
+            setTimeout(function () { document.getElementById('payment').innerText = "Payment completed. Getting you redirected...."; LoadLink(); }, 3000);
+        }
+        function LoadLink() {
+            setTimeout(function () { window.location.href = "/OnlineShopping/OrderCompletion"; }, 2000);
+        }
+        function changeClassName(id, name) {
+            document.getElementById(id).className = name;
+        }
+        function ChangeVisibility(id, name) {
+           
+            document.getElementById(id).style.visibility = name;
+        }
+        function openModel() {
+            $('#trackModel').modal('show');
+        }
+        function openModel1() {
+            $('#myModal').modal('show');
+        }
+    </script>
+</head>
+<body>
+    <app>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </app>
+
+    @*<div id="blazor-error-ui">
+            <environment include="Staging,Production">
+                An error has occurred. This application may no longer respond until reloaded.
+            </environment>
+            <environment include="Development">
+                An unhandled exception has occurred. See browser dev tools for details.
+            </environment>
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>*@
+    <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
+    <script src="_framework/blazor.server.js"></script>
+    <script src="~/css/name.js"></script>
+  
+</body>
+</html>

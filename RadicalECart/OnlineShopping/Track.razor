@@ -1,0 +1,360 @@
+﻿@page "/OnlineShopping/Track"
+@using System.IO;
+@using System.Text
+@inject IConfiguration config
+@inject NavigationManager nav
+@inject IHttpClientFactory Http
+@using Microsoft.Extensions.Configuration
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage;
+@using System.Security.Cryptography;
+@using Newtonsoft.Json;
+@inject IJSRuntime JSRuntime
+@inject ProtectedSessionStorage ProtectedSessionStore
+<style>
+
+    .Orderbox {
+        background-color: white;
+        position: fixed;
+        margin-left: -150px; /* half of width */
+        margin-top: -150px; /* half of height */
+        top: 50%;
+        left: 50%;
+    }
+
+    ol.progtrckr {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+        ol.progtrckr li {
+            display: inline-block;
+            text-align: center;
+            line-height: 3em;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="2"] li {
+            width: 49%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="3"] li {
+            width: 33%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="4"] li {
+            width: 24%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="5"] li {
+            width: 19%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="6"] li {
+            width: 16%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="7"] li {
+            width: 14%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="8"] li {
+            width: 12%;
+        }
+
+        ol.progtrckr[data-progtrckr-steps="9"] li {
+            width: 11%;
+        }
+
+        ol.progtrckr li.progtrckr-done {
+            color: green;
+            border-bottom: 4px solid yellowgreen;
+        }
+
+        ol.progtrckr li.progtrckr-todo {
+            color: white;
+            border-bottom: 4px solid silver;
+        }
+
+        ol.progtrckr li:after {
+            content: "\00a0\00a0";
+        }
+
+        ol.progtrckr li:before {
+            position: relative;
+            bottom: -2.5em;
+            float: left;
+            left: 50%;
+            line-height: 1em;
+        }
+
+        ol.progtrckr li.progtrckr-done:before {
+            content: "\2713";
+            color: white;
+            background-color: yellowgreen;
+            height: 1.2em;
+            width: 1.2em;
+            line-height: 1.2em;
+            border: none;
+            border-radius: 1.2em;
+        }
+
+        ol.progtrckr li.progtrckr-todo:before {
+            content: "\039F";
+            color: silver;
+            background-color: white;
+            font-size: 1.5em;
+            bottom: -1.6em;
+        }
+
+    .table23 th, td {
+        padding: 15px;
+    }
+</style>
+<RadicalECart.Shared.SecondaryNavMenu></RadicalECart.Shared.SecondaryNavMenu>
+<br />
+<h3 style="text-align:center;color:white">Pending Orders</h3>
+<br /> @if (PendingOrders?.Count() > 0)
+{
+    <div class="container">
+        <table class="table23" style="background-color:white;text-align:center;width:100%">
+            <tr>
+                <th style="text-align:center">Order Id</th>
+                <th style="text-align:center">Action</th>
+            </tr>
+
+            @foreach (var item in PendingOrders)
+            {
+                <tr>
+                    <td>@item</td>
+                    <td><button @onclick="@(x=>ProcessOrder(item))">Click here to view full details</button></td>
+                </tr>
+            }
+
+        </table>
+    </div> }
+else if (NoPendingOrders)
+{
+    @NoOrders();
+
+}
+<h4 style="text-align:center;color:white"><b><strong>Click <a href="#" @onclick="@PreviousNav">here</a> to visit previousorders page.</strong></b></h4>
+<br />
+<br />
+
+<div id="trackModel" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Complete tracking details</h4>
+            </div>
+            <div class="modal-body">
+                <ol class="progtrckr" data-progtrckr-steps="5" style="text-align:center">
+                    <li id="stage1" class="progtrckr-done">Placed order</li>
+                    <li id="stage2" class="progtrckr-todo">In packing</li>
+                    <li id="stage3" class="progtrckr-todo">Shipped</li>
+                    <li id="stage4" class="progtrckr-todo">In Local shop</li>
+                    <li id="stage5" class="progtrckr-todo">Delivered</li>
+                </ol>
+                <br />
+                <p>@Text</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@code {
+    public bool NoPendingOrders = false;
+    public void PreviousNav()
+    {
+        nav.NavigateTo("/OnlineShopping/PreviousOrders");
+    }
+    public async Task NoOrders()
+    {
+        await JSRuntime.InvokeVoidAsync("displayswal", "Error", "There are no pending orders. Please check previousorders page to see all completed orders");
+
+    }
+    public async Task ProcessOrder(string item)
+    {
+        ApiCall("GetTrackingDetails", item, "GetTrackingDetails");
+        if (trackObj != null)
+        {
+            if (!string.IsNullOrEmpty(trackObj.DeliveredDate))
+            {
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage1", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage2", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage3", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage4", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage5", "progtrckr-done");
+                Text = "Order placed on " + trackObj.OrderedDate + "\r\nPacking completed on " + trackObj.InPackingDate;
+                Text += "\r\nShipping completed on " + trackObj.ShippedDate + "\r\nReached local shop on " + trackObj.InLocalShopDate;
+                Text += "\r\nProduct/Products delivered on " + trackObj.DeliveredDate;
+            }
+            else if (!string.IsNullOrEmpty(trackObj.InLocalShopDate))
+            {
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage1", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage2", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage3", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage4", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage5", "progtrckr-todo");
+                Text = "Order placed on " + trackObj.OrderedDate + "\r\nPacking completed on " + trackObj.InPackingDate;
+                Text += "\r\nShipping completed on " + trackObj.ShippedDate + "\r\nReached local shop on " + trackObj.InLocalShopDate;
+            }
+            else if (!string.IsNullOrEmpty(trackObj.ShippedDate))
+            {
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage1", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage2", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage3", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage4", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage5", "progtrckr-todo");
+                Text = "Order placed on " + trackObj.OrderedDate + "\r\nPacking completed on " + trackObj.InPackingDate;
+                Text += "\r\nShipping completed on " + trackObj.ShippedDate;
+            }
+            else if (!string.IsNullOrEmpty(trackObj.InPackingDate))
+            {
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage1", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage2", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage3", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage4", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage5", "progtrckr-todo");
+                Text = "Order placed on " + trackObj.OrderedDate + "\r\nPacking completed on " + trackObj.InPackingDate;
+
+            }
+            else if (!string.IsNullOrEmpty(trackObj.OrderedDate))
+            {
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage1", "progtrckr-done");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage2", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage3", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage4", "progtrckr-todo");
+                await JSRuntime.InvokeVoidAsync("changeClassName", "stage5", "progtrckr-todo");
+                Text = "Order placed on " + trackObj.OrderedDate;
+            }
+
+
+
+
+
+        }
+        await JSRuntime.InvokeVoidAsync("openModel");
+        StateHasChanged();
+    }
+    public class TrackingDetails
+    {
+        public string OrderId { get; set; }
+        public string UserId { get; set; }
+        public string OrderedDate { get; set; }
+        public string DeliveredDate { get; set; }
+        public string ShippedDate { get; set; }
+        public string InPackingDate { get; set; }
+        public string InLocalShopDate { get; set; }
+        public string ColumnToBeUpdated { get; set; }
+    }
+    public TrackingDetails trackObj = null;
+    public string[] PendingOrders = null;
+    private object ApiCall(string method, object obj, string callingMethod)
+    {
+        using (var client = new HttpClient())
+        {
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(obj);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(config.GetValue<string>("ApiUrl") + method, httpContent).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (!string.IsNullOrEmpty(result))
+                {
+                    if (callingMethod == "GetPendingOrders")
+                    {
+                        //  trackObj = JsonConvert.DeserializeObject<TrackingDetails>(result);
+                        PendingOrders = JsonConvert.DeserializeObject<string[]>(result);
+                    }
+                    else if (callingMethod == "GetTrackingDetails")
+                    {
+                        trackObj = JsonConvert.DeserializeObject<TrackingDetails>(result);
+                    }
+                    else
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    public string Text = "";
+    public int RenderOnceMore = 0;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Track your order");
+        var Id = await ProtectedSessionStore.GetAsync<string>("UserId");
+        if (string.IsNullOrEmpty(Id))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "You are not authorized " +
+"to access this page. Please login");
+            nav.NavigateTo("/Users/Login");
+        }
+        if (RenderOnceMore == 0)
+        {
+            var userId = await ProtectedSessionStore.GetAsync<string>("UserEmail");
+            if (string.IsNullOrEmpty(userId))
+                userId = Decrypt(await JSRuntime.InvokeAsync<string>("getCookie", Encrypt("UserName")));
+
+            ApiCall("GetPendingOrders", userId, "GetPendingOrders");
+            if (PendingOrders?.Count() > 0)
+                NoPendingOrders = true;
+        }
+        if (RenderOnceMore == 0) { StateHasChanged(); RenderOnceMore += 1; }
+    }
+    private string Encrypt(string clearText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(clearBytes, 0, clearBytes.Length);
+                    cs.Close();
+                }
+                clearText = Convert.ToBase64String(ms.ToArray());
+            }
+        }
+        return clearText;
+    }
+    private string Decrypt(string cipherText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    cs.Close();
+                }
+                cipherText = Encoding.Unicode.GetString(ms.ToArray());
+            }
+        }
+        return cipherText;
+    }
+}

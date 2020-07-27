@@ -1,0 +1,167 @@
+﻿@page "/Users/Login"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+@inject IHttpClientFactory Http
+@using RadicalECart.Data;
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json
+@inject IConfiguration config
+@using System.Text
+@using System.Text.RegularExpressions;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@using System.IO;
+@using System.Data;
+@using System.Security.Cryptography;
+
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<div style="text-align:center">
+    <div class="box">
+        <form class="login-form">
+            <h1>Login</h1>
+            <EditForm OnValidSubmit="@HandleValidSubmit" Model="@user">
+                <InputText type="text" @bind-Value="@user.Email" placeholder="Email address" />
+                @*<ValidationMessage For="@(()=>user.UserName)"></ValidationMessage>*@
+                <InputText type="password" placeholder="Password" @bind-Value="@user.Password" /><br />
+                <InputCheckbox @bind-Value="@user.CheckBoxItem"></InputCheckbox>&nbsp;Keep me signed in
+                @*<ValidationMessage For="@(() => user.Password)"></ValidationMessage>*@
+                <button type="submit" class="loginbtn">Login</button>
+
+
+                <div class="links">
+                    <a href="#" @onclick="GoForgot">Forgot Password</a>
+                    <a href="#" @onclick="GoRegister">Sign Up</a>
+                </div>
+                <div id="formsummary" style="color:red">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+            </EditForm>
+        </form>
+
+    </div>
+
+</div>
+
+@code {
+
+    private LoginModel user = new LoginModel();
+    public void GoRegister()
+    {
+        nav.NavigateTo("/Users/Register");
+    }
+    public void GoForgot()
+    {
+        nav.NavigateTo("/ForgotPassword");
+    }
+    private string Encrypt(string clearText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(clearBytes, 0, clearBytes.Length);
+                    cs.Close();
+                }
+                clearText = Convert.ToBase64String(ms.ToArray());
+            }
+        }
+        return clearText;
+    }
+
+    private string Decrypt(string cipherText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    cs.Close();
+                }
+                cipherText = Encoding.Unicode.GetString(ms.ToArray());
+            }
+        }
+        return cipherText;
+    }
+    public async Task HandleValidSubmit()
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(user);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = httpClient.PostAsync(config.GetValue<string>("ApiUrl") + "Login", httpContent).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+
+                if (!string.IsNullOrEmpty(ans) && Regex.Matches(ans, @"[a-zA-Z0-9]").Count>0)
+                {
+
+
+                    Regex rgx = new Regex("[^a-zA-Z0-9]");
+                    ans = rgx.Replace(ans, "");
+                    if (user.CheckBoxItem)
+                    { await JSRuntime.InvokeVoidAsync("setCookie", Encrypt("UserName"), Encrypt(user.Email), 30);
+                        await JSRuntime.InvokeVoidAsync("setCookie", Encrypt("UserId"), Encrypt(ans), 30);
+                    }
+                    await ProtectedSessionStore.SetAsync("UserId", ans);
+                    await ProtectedSessionStore.SetAsync("UserEmail", user.Email);
+                    await JSRuntime.InvokeVoidAsync("displayswal", "Success",
+                    "Logged in successfully");
+                    nav.NavigateTo("/OnlineShopping/Default");
+                }
+                else
+                    await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                       "Invalid credentials");
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+        }
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Login");
+        var value1 = await JSRuntime.InvokeAsync<string>("getCookie", Encrypt("UserName"));
+        var value2 = await JSRuntime.InvokeAsync<string>("getCookie", Encrypt("UserId"));
+        if (!string.IsNullOrEmpty(value1) && !string.IsNullOrEmpty(value2))
+        {
+            var res1 = Decrypt(value1); var res2 = Decrypt(value2);
+            await ProtectedSessionStore.SetAsync("UserId", res2);
+            await ProtectedSessionStore.SetAsync("UserEmail", res1);
+
+            nav.NavigateTo("/OnlineShopping/Default");
+
+        }
+    }
+}

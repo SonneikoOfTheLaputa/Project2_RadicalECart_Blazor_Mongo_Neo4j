@@ -1,0 +1,133 @@
+﻿@page "/OnlineShopping/PreviousOrders"
+@inject NavigationManager nav
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject IJSRuntime JSRuntime
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject IHttpClientFactory Http
+@using Microsoft.Extensions.Configuration
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.IO;
+@using System.Text
+@inject IConfiguration config
+@using Newtonsoft.Json;
+<style>
+    .table23 th, td {
+        padding: 15px;
+    }
+</style>
+<RadicalECart.Shared.SecondaryNavMenu></RadicalECart.Shared.SecondaryNavMenu>
+<br />
+<h3 style="text-align:center;color:white">Completed Orders</h3>
+<div class="container">
+    <table class="table23" style="background-color:white;width:100%">
+        <tr>
+            <th>Order Id</th>
+            <th>Ordered Date</th>
+            <th>In-Packing Date</th>
+            <th>Shipped Date</th>
+            <th>In-Local shop Date</th>
+            <th>Delivered Date</th>
+            <th>Products list</th>
+            <th>Total amount</th>
+        </tr>
+        @if (CompletedOrders?.Count() > 0 && GetCorrespondingOrderedProductsArr?.Count > 0)
+        {
+            foreach (var item in CompletedOrders)
+            {
+                <tr>
+                    <td>@item.OrderId</td>
+                    <td>@item.OrderedDate</td>
+                    <td>@item.InPackingDate</td>
+                    <td>@item.ShippedDate</td>
+                    <td>@item.InLocalShopDate</td>
+                    <td>@item.DeliveredDate</td>
+                    <td>@GetCorrespondingOrderedProductsArr.Where(x => x.OrderId == item.OrderId).FirstOrDefault().Products</td>
+                    <td>@GetCorrespondingOrderedProductsArr.Where(x => x.OrderId == item.OrderId).FirstOrDefault().Total</td>
+                </tr>
+            }
+        }
+
+    </table>
+
+</div>
+@if ((CompletedOrders==null||CompletedOrders?.Count() <=0 ) && (GetCorrespondingOrderedProductsArr==null||GetCorrespondingOrderedProductsArr?.Count<=0 ))
+{
+    <h4 style="text-align:center;color:white"><b><strong>There is no history of orders</strong></b></h4>
+}
+@code { public class TrackingDetails
+    {
+        public string OrderId { get; set; }
+        public string UserId { get; set; }
+        public string OrderedDate { get; set; }
+        public string DeliveredDate { get; set; }
+        public string ShippedDate { get; set; }
+        public string InPackingDate { get; set; }
+        public string InLocalShopDate { get; set; }
+        public string ColumnToBeUpdated { get; set; }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Completed orders");
+        var Id = await ProtectedSessionStore.GetAsync<string>("UserId");
+        if (string.IsNullOrEmpty(Id))
+            nav.NavigateTo("/Users/Login");
+        if (RenderOnceMore == 0)
+        {
+            ApiCall("GetCompletedOrders", Id, "GetCompletedOrders");
+            if (CompletedOrders?.Count() > 0)
+            {
+                foreach (var item in CompletedOrders)
+                    ApiCall("GetCorrespondingOrderedProducts", item.OrderId, "GetCorrespondingOrderedProducts");
+            }
+
+        }
+        if (RenderOnceMore == 0) { StateHasChanged(); RenderOnceMore += 1; }
+
+    }
+    public TrackingDetails[] CompletedOrders = null;
+    public List<CorrespondingOrderedProducts> GetCorrespondingOrderedProductsArr = new List<CorrespondingOrderedProducts>();
+    public class CorrespondingOrderedProducts
+    {
+        public string OrderId { get; set; }
+        public string Products { get; set; }
+        public string Total { get; set; }
+
+    }
+    public int RenderOnceMore = 0;
+    private object ApiCall(string method, object obj, string callingMethod)
+    {
+        using (var client = new HttpClient())
+        {
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(obj);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(config.GetValue<string>("ApiUrl") + method, httpContent).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (!string.IsNullOrEmpty(result))
+                {
+                    if (callingMethod == "GetCompletedOrders")
+                    {
+                        //  trackObj = JsonConvert.DeserializeObject<TrackingDetails>(result);
+                        CompletedOrders = JsonConvert.DeserializeObject<TrackingDetails[]>(result);
+                    }
+                    else if (method == "GetCorrespondingOrderedProducts")
+                    {
+                        var obj1 = JsonConvert.DeserializeObject<CorrespondingOrderedProducts>(result);
+                        if (GetCorrespondingOrderedProductsArr != null)
+                        {
+                            GetCorrespondingOrderedProductsArr.Add(obj1);
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}

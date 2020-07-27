@@ -1,0 +1,107 @@
+﻿@page "/Deactivate"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+@inject IHttpClientFactory Http
+@using RadicalECart.Data;
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json
+@inject IConfiguration config
+@using System.Text
+
+
+<div style="text-align:center">
+    <div class="box">
+        <form class="login-form">
+            <h1>Deactivate account</h1>
+            <EditForm OnValidSubmit="@HandleValidSubmit" Model="@user">
+                <InputText type="text" @bind-Value="@user.UserId" placeholder="Username" />
+                @*<ValidationMessage For="@(()=>user.UserName)"></ValidationMessage>*@
+                <InputText type="password" placeholder="Password" @bind-Value="@user.Password" />
+
+                <InputText type="password" placeholder="Confirm password" @bind-Value="@user.ConfirmPassword" />
+                @*<ValidationMessage For="@(() => user.Password)"></ValidationMessage>*@
+                <button type="submit" class="loginbtn">Deactivate</button>
+
+
+                <div class="links">
+                    <a href="#" @onclick="GoLogin">Login</a>
+                    <a href="#" @onclick="GoRegister">Register</a>
+                </div>
+                <div id="formsummary" style="color:red">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+            </EditForm>
+        </form>
+
+    </div>
+
+</div>
+
+@code {
+    private DeactivateModel user = new DeactivateModel();
+    public async void HandleValidSubmit()
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Remove account");
+        //var user1 = (object)user;
+
+        string a = ApiCall("CheckUserId", user.UserId);
+        bool.TryParse(a, out bool a1);
+        if (a1)
+        {
+            var user1 = (object)user;
+            string ans = ApiCall("RemoveUser", user1);
+            bool.TryParse(ans, out bool ans1);
+            if (ans1)
+            {
+                await JSRuntime.InvokeVoidAsync("displayswal", "Success",
+                         "your account has been deactivated successfully.");
+            }
+            else
+                await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                        "There is some problem in deactivating your account." +
+                        "Please try again after soem time.");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                          "Username is not found");
+
+        }
+    }
+    private string ApiCall(string methodname, object user)
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(user);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = httpClient.PostAsync(config.GetValue<string>("ApiUrl") + methodname, httpContent).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            return ans;
+        }
+    }
+    public void GoLogin()
+    {
+        nav.NavigateTo("/Users/Login");
+    }
+    public void GoRegister()
+    {
+        nav.NavigateTo("/Users/Register");
+    }
+}

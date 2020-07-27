@@ -1,0 +1,323 @@
+﻿@page "/OnlineShopping/OrderCompletion"
+@inject NavigationManager nav
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject IJSRuntime JSRuntime
+@inject ProtectedSessionStorage ProtectedSessionStore
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;@using System.IO;
+@using System.Data;
+@using System.Security.Cryptography;
+@using Newtonsoft.Json
+@using System.Text
+@inject IConfiguration config
+@inject IHttpClientFactory Http
+@using Microsoft.Extensions.Configuration
+
+<style>
+    #complete {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+<div id="complete">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="-50 -50 500 500" style="enable-background:new 0 0 367.805 367.805;" xml:space="preserve">
+<g>
+    <path style="fill:#3BB54A;" d="M183.903,0.001c101.566,0,183.902,82.336,183.902,183.902s-82.336,183.902-183.902,183.902   S0.001,285.469,0.001,183.903l0,0C-0.288,82.625,81.579,0.29,182.856,0.001C183.205,0,183.554,0,183.903,0.001z" />
+
+
+
+
+
+
+
+    <polygon style="fill:#D4E1F4;" points="285.78,133.225 155.168,263.837 82.025,191.217 111.805,161.96 155.168,204.801    256.001,103.968  " />
+
+
+
+
+
+
+
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+</svg>
+
+    <br />
+    <div style="color:white">
+        <b><strong>Order placed successfully. Please track your order <a href="" @onclick:preventDefault @onclick="@GoTrack">here</a></strong></b>
+    </div>
+</div>
+@code {
+    public void GoTrack()
+    {
+        nav.NavigateTo("/OnlineShopping/Track");
+    }
+    public class TrackingDetails
+    {
+        public string OrderId { get; set; }
+        public string UserId { get; set; }
+        public string OrderedDate { get; set; }
+        public string DeliveredDate { get; set; }
+        public string ShippedDate { get; set; }
+        public string ColumnToBeUpdated { get; set; }
+        public string InPackingDate { get; set; }
+        public string InLocalShopDate { get; set; }
+        public string BillingAddress { get; set; }
+        public string shippingAddress { get; set; }
+    }
+    public class CorrespondingOrderedProducts
+    {
+        public string OrderId { get; set; }
+        public string Products { get; set; }
+        public string Total { get; set; }
+
+    }
+    public class TransactionDetails
+    {
+        public string TransactionId { get; set; }
+        public string EmailAddress { get; set; }
+        public string PaymentDate { get; set; }
+        public string Amount { get; set; }
+        public string Status { get; set; }
+        public string ProductName { get; set; }
+        public string Quantity { get; set; }
+    }
+    public class ProductDetails
+    {
+        public string Name { get; set; }
+        public string Price { get; set; }
+        public string Chosen { get; set; }
+        public string Quantity { get; set; }
+    }
+    public bool isDone = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var avoidDoingProcess = await ProtectedSessionStore.GetAsync<string>("avoidDoingProcess");
+        await JSRuntime.InvokeVoidAsync("setTitle", "Order is successfully placed");
+        if (!isDone && string.IsNullOrEmpty(avoidDoingProcess))
+        {
+            var det = new List<ProductDetails>();
+            var value = await ProtectedSessionStore.GetAsync<string>("isPaymentProcess");
+            if (!string.IsNullOrEmpty(value) && value.Contains("done"))
+            {
+                var _productName = await ProtectedSessionStore.GetAsync<string>("_productName");
+                var _totalChosenProducts = await ProtectedSessionStore.GetAsync<string>("_totalChosenProducts");
+                var _productQty = await ProtectedSessionStore.GetAsync<string>("_productQty");
+                var _productPrice = await ProtectedSessionStore.GetAsync<string>("_productPrice");
+                if (!string.IsNullOrEmpty(_productName) && !string.IsNullOrEmpty(_totalChosenProducts)
+          && !string.IsNullOrEmpty(_productQty) && !string.IsNullOrEmpty(_productPrice))
+                {
+
+                    if (_productName.Contains("||"))
+                    {
+                        var productnames = _productName.Split("||");
+                        var productQty = _productQty.Split("||");
+                        var totalproducts = _totalChosenProducts.Split("||");
+                        var productPrice = _productPrice.Split("||");
+                        for (int i = 0; i < productnames.Length; i++)
+                        {
+                            if (!det.Any(x => x.Name == productnames[i]))
+                                det.Add(new ProductDetails { Price = productPrice[i], Name = productnames[i], Chosen = totalproducts[i], Quantity = productQty[i] });
+                            else
+                            {
+                                var detail1 = det.Where(x => x.Name == productnames[i]).FirstOrDefault();
+                                det.Remove(detail1);
+                                var q = detail1.Chosen;
+                                det.Add(new ProductDetails
+                                {
+                                    Price = productPrice[i],
+                                    Name = productnames[i],
+                                    Chosen = (int.Parse(q) + 1).ToString(),
+                                    Quantity = productQty[i]
+                                });
+                            }
+                        }
+
+                    }
+                    else
+                        det.Add(new ProductDetails
+                        {
+                            Chosen = _totalChosenProducts,
+                            Price = _productPrice,
+                            Name = _productName,
+                            Quantity = _productQty,
+                        });
+
+                }
+                string guid = Guid.NewGuid().ToString();
+                var UpdateTrackingDetailsObj = new TrackingDetails
+                {
+                    OrderedDate = DateTime.Now.ToString(),OrderId= guid,
+                    UserId = await ProtectedSessionStore.GetAsync<string>("UserEmail"),
+                    BillingAddress= await ProtectedSessionStore.GetAsync<string>("billingaddress"),
+                    shippingAddress= await ProtectedSessionStore.GetAsync<string>("shippingaddress")
+                };
+                if (string.IsNullOrEmpty(UpdateTrackingDetailsObj.UserId))
+                    UpdateTrackingDetailsObj.UserId =Decrypt( await JSRuntime.InvokeAsync<string>("getCookie", Encrypt("UserName")));
+                var SavePaymentTransaction = new TransactionDetails
+                {
+                    Amount = det.Sum(x => (int.Parse(x.Price) * int.Parse(x.Chosen))).ToString(),
+                    EmailAddress = await ProtectedSessionStore.GetAsync<string>("UserEmail"),
+                    PaymentDate = DateTime.Now.ToString(),
+                    Status = "Success",
+                    TransactionId = Guid.NewGuid().ToString(),
+                    ProductName=_productName,Quantity=_totalChosenProducts
+                };
+                if (string.IsNullOrEmpty(SavePaymentTransaction.EmailAddress))
+                    SavePaymentTransaction.EmailAddress =Decrypt( await JSRuntime.InvokeAsync<string>("getCookie", Encrypt("UserName")));
+                var formatstring = ""; if (det?.Count > 0)
+                {
+
+                    foreach (var item in det)
+                    {
+                        formatstring += item.Name + " " + "(" + item.Chosen + ")||";
+                        item.Quantity = (int.Parse(item.Quantity) - int.Parse(item.Chosen)).ToString();
+                        if (item.Quantity.Length == 1)
+                            item.Quantity = "0" + item.Quantity;
+
+                        ApiCall("UpdateProducts", item);
+                    }
+                }
+                formatstring = formatstring.Substring(0,formatstring.Length - 2);
+                var CorrespondingOrderedProductsObj = new CorrespondingOrderedProducts
+                {
+                    OrderId = guid,
+                    Products = formatstring,
+                    Total = det.Sum(x => (int.Parse(x.Price) * int.Parse(x.Chosen))).ToString()
+                };
+                var UsedCoupon = await ProtectedSessionStore.GetAsync<string>("UsedCoupon");
+                if (!string.IsNullOrEmpty(UsedCoupon))
+                {
+                    var couponObj = new CouponCode
+                    {
+                        Assign = await ProtectedSessionStore.GetAsync<string>("UserEmail"),
+                        CouponName = await ProtectedSessionStore.GetAsync<string>("UsedCoupon")
+                    }; ApiCall("UpdateCouponCode", couponObj); }
+                ApiCall("UpdateTrackingDetails", UpdateTrackingDetailsObj);
+                ApiCall("SavePaymentTransaction", SavePaymentTransaction);
+                ApiCall("AddCorrespondingOrderedProducts", CorrespondingOrderedProductsObj);
+                isDone = true; await ProtectedSessionStore.SetAsync("avoidDoingProcess", "1");
+                await ProtectedSessionStore.SetAsync("_productName","");
+                await ProtectedSessionStore.SetAsync("_totalChosenProducts","");
+                await ProtectedSessionStore.SetAsync("_productQty","");
+                await ProtectedSessionStore.SetAsync("_productPrice","");
+            }
+            else
+            {
+                nav.NavigateTo("/OnlineShopping/CheckOutCart");
+            }
+        }
+        else if(!string.IsNullOrEmpty(avoidDoingProcess))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error","Empty cart");
+            nav.NavigateTo("/OnlineShopping/Default");
+        }
+    }
+
+
+    public class CouponCode
+    {
+        public string CouponName { get; set; }
+        public string CouponValidFrom { get; set; }
+        public string CouponValidTo { get; set; }
+        public string AmountOff { get; set; }
+        public string MaxAllow { get; set; }
+        public string Assign { get; set; }
+    }
+    private string Encrypt(string clearText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(clearBytes, 0, clearBytes.Length);
+                    cs.Close();
+                }
+                clearText = Convert.ToBase64String(ms.ToArray());
+            }
+        }
+        return clearText;
+    }
+    private string Decrypt(string cipherText)
+    {
+        string EncryptionKey = "MAKV2SPBNI99212";
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    cs.Close();
+                }
+                cipherText = Encoding.Unicode.GetString(ms.ToArray());
+            }
+        }
+        return cipherText;
+    }
+    private bool ApiCall(string method, object obj)
+    {
+        using (var client = new HttpClient())
+        {
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(obj);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(config.GetValue<string>("ApiUrl") + method, httpContent).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (result.Contains("true"))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}

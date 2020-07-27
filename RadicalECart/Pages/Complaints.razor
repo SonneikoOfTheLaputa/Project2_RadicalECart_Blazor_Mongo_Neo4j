@@ -1,0 +1,356 @@
+﻿@page "/Complaints"
+@inject IJSRuntime JSRuntime
+@using System.Net;
+@using System.Net.Mail;
+@using System.Text.RegularExpressions;
+@inject IConfiguration config
+@inject NavigationManager nav
+@inject IHttpClientFactory Http
+@using Microsoft.Extensions.Configuration
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using Newtonsoft.Json;
+@using System.Text;
+<NavMenu></NavMenu>
+<br />
+<style>
+  *,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* FONTS
+font-family: 'Roboto', sans-serif;
+font-family: 'Roboto Condensed', sans-serif; */
+
+:root {
+  --primary-clr: #00b0f0;
+  --secondary-clr: #f1540f;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  color: #555555;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  background-color:white;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+p#break {
+  font-weight: lighter;
+  font-size: 0.85rem;
+  line-height: 1;
+
+  margin: 0;
+}
+
+.container {
+  width: 75%;
+  margin: auto;
+  max-width: 700px;
+}
+
+.card {
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.46);
+  border-radius: 10px;
+  margin-bottom: 2em;
+  padding: 2em;
+  /* Gives opacity to card without effecting children */
+  background: rgba(247, 247, 247, 0.95);
+}
+
+.message-title {
+  margin-top: 0;
+  padding-bottom: 0.75em;
+  border-bottom: solid 1px rgb(221, 221, 221);
+  text-align: left;
+}
+
+.message-container {
+  margin-bottom: 8em;
+  max-width: 600px;
+}
+
+#mainDiv {
+  display: grid;
+
+  grid-template-columns: 90px auto auto;
+  grid-column-gap: 0.5em;
+  grid-row-gap: 2em;
+}
+
+label {
+  font-weight: bold;
+  grid-column: 1/2;
+}
+
+input {
+  /* May help keep right column responsive
+    width: cal(100%-200px); */
+  grid-column: 2/4;
+  height: 3em;
+  border: solid 3px var(--primary-clr);
+  border-radius: 4em;
+  padding: 0 1em;
+}
+
+input,
+textarea {
+  font-family: "Roboto", sans-serif;
+}
+
+textarea {
+  grid-column: 2/4;
+  border-radius: 2em;
+  border: solid 3px var(--primary-clr);
+  padding: 0.5em 1em;
+}
+
+input:focus,
+textarea:focus {
+  background: rgb(211, 230, 253);
+}
+
+.first-name {
+  grid-column: 2/3;
+}
+
+.last-name {
+  grid-column: 3/4;
+}
+
+.button-container {
+  grid-column: 1/4;
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  width: 5.5em;
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
+
+@@media screen and (max-width: 1024px) {
+  /* Specific to background image */
+  img #background-img {
+    left: 50%;
+    margin-left: -512px; /* 50% */
+  }
+}
+
+/* For Mobile */
+@@media (max-width: 750px) {
+  .container {
+    width: 90%;
+  }
+
+  #mainDiv {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .name {
+    grid-column-gap: 0;
+  }
+
+  input,
+  textarea {
+    margin: 1em 0;
+  }
+
+  p#break {
+    display: inline;
+  }
+}
+</style>
+<div class="container card message-container ">
+    <h1 class="message-title">Register your complaint</h1>
+
+    <div id="mainDiv">
+
+        <label for="subject" class="subject">Subject</label>
+        <input type="text" name="subject" maxlength="45" @bind-value="@sub">
+
+        <label for="message" class="message">Message</label>
+        <textarea name="message" cols="30" rows="7" required maxlength="500" @bind="@msg"></textarea>
+
+        <label for="name" class="name">
+            Name
+            <!-- keep <p> on next line to keep a letter space for mobile version -->
+            <p id="break">(Optional)</p>
+        </label>
+        <input class="first-name" type="text" name="first-name" placeholder="First Name" maxlength="20" @bind-value="@fn">
+        <input class="last-name" type="text" name="last-name" placeholder="Last Name" maxlength="20" @bind-value="@ln">
+
+        <label for="email" class="email">
+            Username
+            <!-- keep <b> on next line to keep a letter space for mobile version -->
+            <p id="break">(Optional)</p>
+        </label>
+        <input type="text" name="email" placeholder="--your registered username--" @bind-value="@mail">
+        <label for="name" class="name" style="color:red">
+            Fields are case - sensitive
+            <!-- keep <p> on next line to keep a letter space for mobile version -->
+         
+        </label>
+        <p class="button-container">
+            <input class="button" type="submit" value="Send" @onclick="@Send">
+        </p>
+    </div>
+</div>
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Lodge complaint");
+    }
+    public class Complaint
+    {
+        public string Subject { get; set; }
+        public string complaintId { get; set; }
+        public string Message { get; set; }
+        public string Status { get; set; }
+        public string Note { get; set; }
+    }
+    private object ApiCall(string method, object obj,string methodcalled="")
+    {
+        using (var client = new HttpClient())
+        {
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(obj);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(config.GetValue<string>("ApiUrl") + method, httpContent).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (!string.IsNullOrEmpty(result))
+                {
+                    if(methodcalled == "GetUserDetails")
+                    {
+                        return JsonConvert.DeserializeObject<User>(result);
+                    }
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public class User
+    {
+
+        public string UserId { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string Age { get; set; }
+
+        public string Address1 { get; set; }
+
+        public string Address2 { get; set; }
+
+        public string City { get; set; }
+
+
+        public string PinCode { get; set; }
+
+        public string Country { get; set; }
+
+        public string Email { get; set; }
+
+        public string MobileNumber { get; set; }
+
+        public string Password { get; set; }
+
+        public string AreaCode { get; set; }
+    }
+    public string fn = ""; public string ln = "";
+    public string mail = "";
+    public string sub = "";
+    public string msg = "";
+    public string msg2 = "";
+    public async Task Send()
+    {
+        User obj1 = null;
+        var obj = ApiCall("GetUserDetails", mail, "GetUserDetails");
+        var isbooltype = obj is bool;
+        if(!isbooltype)
+            obj1 = (User)obj;
+
+        // bool isEmail = Regex.IsMatch(mail, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
+        if (obj1!=null && obj1.FirstName==fn && obj1.LastName==ln)
+        {
+            if (!string.IsNullOrEmpty(msg))
+            {
+                if (!string.IsNullOrEmpty(sub))
+                {
+                    ApiCall("GetUserDetails", "");
+                    var fromAddress = new MailAddress("mailme.radicalecarts@gmail.com");
+                    var toAddress = new MailAddress(obj1.Email);
+                    const string fromPassword = "qwerty123@Q";
+                    const string subject = "Complaint submitted successfully";
+                    string b = "Thanks for contacting us. <br/><br/>. We have got your complaint and we will look into it quickly and get back to you.<br/><br/> Thanks for your patience";
+                    string body = b;
+
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+                    };
+                    using (var message = new MailMessage(fromAddress, toAddress)
+                    {
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                    {
+                        smtp.Send(message);
+                        await JSRuntime.InvokeVoidAsync("displayswal", "Success", "We have sent a confirmation mail. We will keep in touch regarding your complaint");
+                        msg2 = "We have sent a confirmation mail. We will keep in touch regarding your complaint";
+                    }
+                    ApiCall("SaveComplaint", new Complaint { complaintId=Guid.NewGuid().ToString(),Subject=sub,Message=msg,Status="Open"});
+                    StateHasChanged();
+                }
+                else
+                    await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Invalid subject");
+            }
+            else
+                await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Invalid message");
+        }
+        else
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Invalid user Id/firstname/lastname");
+    }
+}

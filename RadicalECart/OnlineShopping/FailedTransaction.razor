@@ -1,0 +1,117 @@
+﻿@page "/OnlineShopping/FailedTransaction"
+@inject NavigationManager nav
+@using Newtonsoft.Json
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@inject IConfiguration config
+@using System.Text;
+@inject IHttpClientFactory Http
+@using Microsoft.Extensions.Configuration
+@using System.Net;
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+<RadicalECart.Shared.SecondaryNavMenu></RadicalECart.Shared.SecondaryNavMenu>
+<br />
+<style>
+    .table23 th,td{
+        padding:15px;
+    }
+</style>
+<div style="text-align:center">
+    <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true" style="color:red"></i>
+</div>
+<br />
+<h3 style="color:white;text-align:center">Failed transaction</h3><br />
+<h4 style="color:white;text-align:center">Click <a href="#" @onclick:preventDefault @onclick="@GoToCart">here</a> to make payment again.</h4>
+<br />
+<br />
+<h3 style="text-align:center;color:white">Transactions history</h3>
+<br />
+<div class="container">
+    <table class="table23"  style="background-color:white">
+        <tr>
+            <th>Transaction Id</th>
+            <th>Products</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Payment date</th>
+            <th>Status</th>
+            <th>Email address</th>
+        </tr>
+        @if (det?.Count() > 0)
+        {
+            foreach (var item in det)
+            {
+                <tr>
+                    <td>@item.TransactionId</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Amount</td>
+                    <td>@item.PaymentDate</td>
+                    <td>@item.Status</td>
+                    <td>@item.EmailAddress</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+@code {
+    public void GoToCart()
+    {
+        nav.NavigateTo("/OnlineShopping/CheckOutCart");
+    }
+    public int render = 0;
+    public TransactionDetails[] det = null;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (render == 0 || render == 1)
+        {
+            ApiCall("GetTransactionDetails");
+            StateHasChanged(); render += 1;
+
+        }
+
+       
+    }
+    private object ApiCall(string method)
+    {
+        using (var client = new HttpClient())
+        {
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+            var response = client.GetAsync(config.GetValue<string>("ApiUrl") + method).Result;
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                if (method == "GetTransactionDetails")
+                {
+                    det = JsonConvert.DeserializeObject<TransactionDetails[]>(result);
+                }
+                else if (result.Contains("true"))
+                {
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public class TransactionDetails
+    {
+
+        public string TransactionId { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public string PaymentDate { get; set; }
+
+        public string Amount { get; set; }
+
+        public string Status { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string Quantity { get; set; }
+    }
+}

@@ -1,0 +1,294 @@
+﻿@page  "/Users/EditProfile"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@using System.Text
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+
+@inject IHttpClientFactory Http
+@using System.Net;
+@using Newtonsoft.Json
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Web
+@using RadicalECart.Data
+
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<div style="text-align:center">
+    <TelerikButton ButtonType="ButtonType.Button" OnClick="(async()=>await GetDetails())">Get Details</TelerikButton>
+    <div class="box" id="editformdisplay">
+        <form class="login-form">
+            <h1>Edit Profile</h1>
+
+            <EditForm OnValidSubmit="@HandleValidSubmit" Model="@user1">
+                <InputText type="text" @bind-Value="@user1.UserId" placeholder="Username"
+                               disabled="true"></InputText>
+
+                    <InputText type="text" @bind-Value="@user1.FirstName" placeholder="Firstname"></InputText>
+                    <InputText type="text" @bind-Value="@user1.LastName" placeholder="Lastname"></InputText>
+                    <InputText type="text" @bind-Value="@user1.Age" placeholder="Age"></InputText>
+                    <InputText type="text" @bind-Value="@user1.Email" placeholder="Email"></InputText>
+                    <InputText type="text" @bind-Value="@user1.MobileNumber" placeholder="Mobile number"
+                               ></InputText>
+
+                    <InputText type="text" @bind-Value="@user1.Address1" placeholder="Address Line 1"></InputText>
+                    <InputText type="text" @bind-Value="@user1.Address2" placeholder="Address Line 2"></InputText>
+
+                    <TelerikDropDownList Data="@myCtriesDdlModel" TextField="MyTextField" ValueField="MyValueField"
+                                         @bind-Value="@user1.Country" OnChange="populatecities">
+                    </TelerikDropDownList>
+                    <TelerikDropDownList Data="@myCitiesDdlModel" TextField="MyTextField" ValueField="MyValueField" DefaultText="--select city--"
+                                         @bind-Value="@user1.City">
+                    </TelerikDropDownList>
+                    <InputText type="password" @bind-Value="@user1.Password" placeholder="Password"></InputText>
+                    <InputText type="password" @bind-Value="@user1.ConfirmPassword" placeholder="Confirm password"></InputText>
+                    <InputText type="text" @bind-Value="@user1.AreaCode" placeholder="Area code"></InputText>
+                    <InputText type="text" @bind-Value="@user1.PinCode" placeholder="Pin code"></InputText>
+                <button type="submit" class="loginbtn">Edit profile</button>
+                <div id="formsummary" style="color:red">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+            </EditForm>
+        </form>
+
+    </div>
+
+</div>
+@code {
+    public RegisterModel user1 = new RegisterModel();
+    // public InputText pincodetext { get; set; }
+    public async Task GetDetails()
+    {
+        await JSRuntime.InvokeVoidAsync("displayeditdetails");
+        user1 = await ProtectedSessionStore.GetAsync<RegisterModel>("UserDetails");
+
+        await JSRuntime.InvokeVoidAsync("displayswal", "Note",
+                       "You cannot change username.");
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Edit profile");
+        string ans = ""; CountriesListWrapper objres = null;
+
+        var countries= await ProtectedSessionStore.GetAsync<IEnumerable<countriesDdlModel>>("Countries");
+        if (countries?.Count() > 0) { myCtriesDdlModel = countries; }
+        else
+        {
+            using (var httpClient = new HttpClient())
+            {
+
+                var request = new HttpRequestMessage()
+                {
+                    RequestUri = new Uri("https://parseapi.back4app.com/classes/Continentscountriescities_Country?keys=name"),
+                    Method = HttpMethod.Get,
+                };
+                request.Headers.Clear();
+                request.Headers.Add("X-Parse-Application-Id", "beYHRBIS2kPmRXSMvlq7eYI5N7zLlbLxSJbMZDY0");
+                request.Headers.Add("Accept", "application/json");
+                request.Headers.Add("X-Parse-REST-API-Key", "eUPDC7NtnH5hw928cTbx113L3nxTGqDeYnr39Fmw");
+                var response = httpClient.SendAsync(request).Result;
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    ans = response.Content.ReadAsStringAsync().Result;
+                    objres = JsonConvert.DeserializeObject<CountriesListWrapper>(ans);
+
+                    //myCtriesDdlModel = myCtriesDdlModel.Concat("--select ccountry--");
+                    List<CountriesList> templist = objres.results.ToList();
+
+                    templist.Add(new CountriesList { name = "--select country--" });
+                    myCtriesDdlModel = templist.Select(x => new countriesDdlModel
+                    {
+                        MyTextField = x.name,
+                        MyValueField = x.name,
+                        objectId = x.objectId
+                    });
+                    await ProtectedSessionStore.SetAsync("Countries", myCtriesDdlModel);
+                    //myCtriesDdlModel = templist.AsEnumerable();
+
+
+
+
+                }
+                else
+                {
+                    ans = "Some error occured." + response.StatusCode;
+                }
+                //return ans;
+            }
+        }
+        List<citiesDdlModel> tempcitiesddlonload = new List<citiesDdlModel>();
+        if (!string.IsNullOrEmpty(user1.Country)) {
+            coutryDdlValue = user1.Country;
+            populatecities();
+        }
+
+        //if (user1!=null && !string.IsNullOrEmpty(user1.Country))
+        //{
+        //    coutryDdlValue = user1.Country;
+        //    populatecities();
+        //}
+        //if (user1 != null && !string.IsNullOrEmpty(user1.City))
+        //{
+        //    cityDdlValue = user1.City;
+        //}
+        var userId = await ProtectedSessionStore.GetAsync<string>("UserId");
+        var userDetails = await ProtectedSessionStore.GetAsync<RegisterModel>("UserDetails");
+        if (!string.IsNullOrEmpty(userId))
+        {
+            if (userDetails == null)
+            {
+                await JSRuntime.InvokeVoidAsync("hideeditdetails");
+                object id = "Sylar";
+                var response = ApiCall("GetUserDetails", id);
+                var obj = JsonConvert.DeserializeObject<RegisterModel>(response);
+                if (obj != null)
+                {
+                    //user1 = obj;
+                    await ProtectedSessionStore.SetAsync("UserDetails", obj);
+                    //pincodetext.Value = user1.PinCode;
+                }
+            }
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                           "Please login to access this page.");
+            nav.NavigateTo("/Users/Login");
+
+        }
+    }
+    public class countriesDdlModel
+    {
+        public string objectId { get; set; }
+        public string MyValueField { get; set; }
+        public string MyTextField { get; set; }
+    }
+    public class citiesDdlModel
+    {
+        public string objectId { get; set; }
+        public string MyValueField { get; set; }
+        public string MyTextField { get; set; }
+    }
+    public IEnumerable<countriesDdlModel> myCtriesDdlModel = null;
+    public IEnumerable<citiesDdlModel> myCitiesDdlModel = null;
+
+    public void populatecities()
+    {
+        var chosenCountry =user1.Country;
+        var objectId = myCtriesDdlModel.Where(x => x.MyValueField == chosenCountry).FirstOrDefault().objectId;
+        string ans = "";
+        string where = HttpUtility.UrlEncode("{" +
+           "    \"country\": {" +
+           "        \"__type\": \"Pointer\"," +
+           "        \"className\": \"Continentscountriescities_Country\"," +
+           "        \"objectId\": \"" + objectId + "\"" +
+           "    }" +
+           "}", Encoding.UTF8);
+        using (var httpClient = new HttpClient())
+        {
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://parseapi.back4app.com/classes/Continentscountriescities_City?keys=name,country&where=" + where),
+                Method = HttpMethod.Get,
+            };
+            request.Headers.Clear();
+            request.Headers.Add("X-Parse-Application-Id", "beYHRBIS2kPmRXSMvlq7eYI5N7zLlbLxSJbMZDY0");
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("X-Parse-REST-API-Key", "eUPDC7NtnH5hw928cTbx113L3nxTGqDeYnr39Fmw");
+            var response = httpClient.SendAsync(request).Result;
+            if (response.StatusCode == HttpStatusCode.OK
+                )
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+                var objres = JsonConvert.DeserializeObject<CitiesListWrapper>(ans);
+                List<CitiesList> citytemplist = objres.results.ToList();
+
+                citytemplist.Add(new CitiesList { name = "--select country--", objectId = "" });
+                myCitiesDdlModel = citytemplist.Select(x => new citiesDdlModel
+                {
+                    MyTextField = x.name,
+                    MyValueField = x.name,
+                    objectId = x.objectId
+                });
+            }
+        }
+    }
+
+    public class CountriesListWrapper
+    {
+        public CountriesList[] results { get; set; }
+    }
+    public class CountriesList
+    {
+        public string objectId { get; set; }
+        public string name { get; set; }
+    }
+    public class CitiesListWrapper
+    {
+        public CitiesList[] results { get; set; }
+    }
+    public class CitiesList
+    {
+        public string objectId { get; set; }
+        public string name { get; set; }
+    }
+    private string coutryDdlValue { get; set; } = "--select country--";
+    private string cityDdlValue { get; set; } = "--select city--";
+    public async Task HandleValidSubmit()
+    {
+        string message=ApiCall("EditDetails", user1);
+        if(message.Contains("true"))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Success",
+                "Records have been updated successfully.");
+            nav.NavigateTo("/Users/Login");
+        }
+        else if(message.Contains("Mobile"))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                "Mobile number has already been taken.");
+        }
+        else if (message.Contains("Email"))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                "Email address has already been taken.");
+        }
+        else if (message.Contains("false"))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                "Error in updating the details. Please try again later.");
+        }
+    }
+    private string ApiCall(string methodname, object user)
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(user);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = httpClient.PostAsync(config.GetValue<string>("ApiUrl") + methodname, httpContent).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            return ans;
+        }
+    }
+
+}

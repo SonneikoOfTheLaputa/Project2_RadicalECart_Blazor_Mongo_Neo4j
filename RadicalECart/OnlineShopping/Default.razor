@@ -1,0 +1,456 @@
+﻿@page "/OnlineShopping/Default"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager nav
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@using System.Text;
+@inject IHttpClientFactory Http
+@using System.Net;
+@using Newtonsoft.Json
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text.RegularExpressions;
+@using RadicalECart.Shared;
+<style>
+    .body {
+        background-color: white;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 270px;
+        margin: auto;
+        text-align: center;
+        padding: 20px;
+        font-family: arial;
+        display: inline-block;
+        background-color: white;
+        height: 830px;
+    }
+
+    .price {
+        color: grey;
+        font-size: 22px;
+    }
+
+    .card button {
+        border: none;
+        outline: 0;
+        padding: 12px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+        .card button:hover {
+            opacity: 0.7;
+        }
+
+    #wrapper {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    ul li {
+        display: inline;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-column-gap: 30px;
+        grid-row-gap: 30px;
+        grid-template-columns: auto auto auto auto;
+    }
+
+    .grid-item {
+        text-align: center;
+    }
+
+    #label {
+        border-radius: 4px;
+        padding: 0.2em 0.6em;
+        border: 1px solid #009ce2;
+        background-color: #00acff;
+        color: #fff;
+        font-size: 0.8em;
+    }
+</style>
+
+ <SecondaryNavMenu></SecondaryNavMenu>
+<br />
+<div class="grid-container">
+    @if (details?.Count() > 0)
+    {
+        @foreach (var item in details)
+        {
+            var id = "deletecart" + item.Index;
+            var link = "";
+            var base64 = Convert.ToBase64String(item.Image);
+            link = String.Format("data:image/gif;base64,{0}", base64);
+
+            <div class="grid-item">
+                <div class="card">
+
+                    <img src=@link alt=@item.Name style="width:100%;height:200px">
+                    <h3 style="height:100px;overflow:hidden;text-overflow:ellipsis">@item.Name</h3>
+                    <p class="price">₹@item.Price</p>
+                    <p style="height:100px;overflow:hidden;text-overflow:ellipsis">@item.Description</p>
+
+
+                    .... <button id="label" for="expanded" role="button" data-toggle="modal" data-target="#Model"
+                                 @onclick=@(x => NameModel(item.Description, item.Name))>
+                        read more
+                    </button>
+                    <br /><br /><br />
+                    @*<p style="height:100px;overflow:hidden;text-overflow:ellipsis">@item.Hyperlink</p>*@
+                    <button id="label" for="expanded" role="button" data-toggle="modal" data-target="#Model"
+                            @onclick=@(x => VisitWebsite(item.Hyperlink))>
+                        visit website
+                    </button>
+                    <p>@item.Warranty of warranty provided by @item.Seller</p>
+                    <p>@int.Parse(@item.Quantity) stocks left</p>
+                    @if (@item.Quantity != "00")
+                    {
+                        <p><button id=@item.Name @onclick=@(x => AddtoCart(item))>Add to Cart</button></p>}
+                    else
+                    { <p><button id=@item.Name @onclick=@(x=>NotifyMe(item))>Notify me</button></p>}
+                    @if (item.InAddList > 0)
+                    {
+                        <p style="visibility:visible;text-align:center;" id=@id>
+                            <i class="fa fa-trash fa-lg" aria-hidden="true"
+                               @onclick="@(x=>DeleteFromCart(item))">
+                                (@item.InAddList)
+                            </i>
+                        </p>
+                    }
+                    else
+                    {
+                        <p style="visibility:hidden;text-align:center;" id=@id>
+                            <i class="fa fa-trash fa-lg" aria-hidden="true"
+                               @onclick="@(x=>DeleteFromCart(item))">
+                                (@item.InAddList)
+                            </i>
+                        </p>
+                    }
+                </div>
+
+            </div>
+
+        }
+    }
+</div>
+<div id="Model" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@Title</h4>
+            </div>
+            <div class="modal-body">
+                <p>@Description</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@code
+{
+    public List<ProductDetails> temp = new List<ProductDetails>();
+    public bool isAdded = false;
+    public class NotifyUser
+    {
+        public string User { get; set; }
+        public string item { get; set; }
+    }
+    public async Task NotifyMe(ProductDetails param)
+    {
+        var obj = await ProtectedSessionStore.GetAsync<string>("UserId");
+        var response = PostApiCall("GetEmailAddress", obj);
+        Regex rgx = new Regex("[^a-zA-Z0-9@.]");
+        response = rgx.Replace(response, "");
+        PostApiCall("NotifyUser", new NotifyUser { item = param.Name, User = response });
+        await JSRuntime.InvokeVoidAsync("displayswal", "Success", "Notification mail has been sent to your mail. We will update the cart with stocks quickly.");
+    }
+    public async Task VisitWebsite(string link)
+    {
+        await JSRuntime.InvokeAsync<object>("open", link, "_blank");
+    }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public void NameModel(string message, string title)
+    {
+        Title = title;
+        Description = message;
+    }
+    private void ProcessAddDelete(ProductDetails param, string method)
+    {
+        //var details1 = details;
+        //var a = details1.ToList().Where(x => x.Name == param.Name).FirstOrDefault();
+        //details1.ToList().Remove(a);
+        //if (method == "add")
+        //    a.InAddList += 1;
+        //else
+        //    a.InAddList -= 1;
+        //details1.ToList().Add(a);
+        //details = details1;
+        //temp = details;
+        if (method == "add")
+            param.InAddList += 1;
+        else
+            param.InAddList -= 1;
+        foreach(var item in details)
+        {
+            if (item.Name == param.Name)
+            {
+                temp.Add(param);
+            }
+            else
+                temp.Add(item);
+        }
+        details = temp.ToArray();
+    }
+    public async Task DeleteFromCart(ProductDetails param)
+    {
+        var _productName = await ProtectedSessionStore.GetAsync<string>("_productName");
+        var _totalChosenProducts = await ProtectedSessionStore.GetAsync<string>("_totalChosenProducts");
+        var _productPrice = await ProtectedSessionStore.GetAsync<string>("_productPrice");
+        if (!string.IsNullOrEmpty(_totalChosenProducts) && !string.IsNullOrEmpty(_productName)
+                && !string.IsNullOrEmpty(_productPrice))
+        {
+            if (_productName.Contains("||"))
+            {
+                var c = Regex.Matches(_productName, param.Name).Count;
+
+                string s1 = _productName;
+                int q = s1.LastIndexOf(param.Name);
+                if (q > 3 && q <= s1.Length - 1)
+                {
+                    s1 = s1.Remove(q - 2, param.Name.Length + 2);
+                }
+                else
+                {
+                    s1 = s1.Replace(s1.Substring(0, param.Name.Length + 2), "");
+                }
+                await ProtectedSessionStore.SetAsync("_productName", s1);
+
+                s1 = _productPrice;
+                q = s1.LastIndexOf(param.Price);
+                if (q > 3 && q <= s1.Length - 1)
+                {
+                    s1 = s1.Remove(q - 2, param.Price.Length + 2);
+                }
+                else
+                {
+                    s1 = s1.Replace(s1.Substring(0, param.Price.Length + 2), "");
+                }
+                await ProtectedSessionStore.SetAsync("_productPrice", s1);
+
+                s1 = _totalChosenProducts;
+                q = s1.LastIndexOf("1");
+                if (q > 3 && q <= s1.Length - 1)
+                {
+                    s1 = s1.Remove(q - 2, "1".Length + 2);
+                }
+                else
+                {
+                    s1 = s1.Replace(s1.Substring(0, "1".Length + 2), "");
+                }
+                await ProtectedSessionStore.SetAsync("_totalChosenProducts", s1);
+                await JSRuntime.InvokeVoidAsync("displayswal", "Success", "Product has been removed from your cart.");
+                ProcessAddDelete(param, "delete"); StateHasChanged();
+
+            }
+            else
+            {
+                await ProtectedSessionStore.SetAsync("_productName", "");
+                await ProtectedSessionStore.SetAsync("_totalChosenProducts", "");
+                await ProtectedSessionStore.SetAsync("_productPrice", "");
+                await JSRuntime.InvokeVoidAsync("displayswal", "Success", "Product has been removed from your cart.");
+                ProcessAddDelete(param, "delete"); StateHasChanged();
+
+            }
+        }
+    }
+    public async Task AddtoCart(ProductDetails param)
+    {
+        int a = 0;
+        var detail = param.Name;
+        var detailQuantity = param.Chosen; var intDetailQuantity = !string.IsNullOrEmpty(detailQuantity) ?
+             int.Parse(detailQuantity) : 0;
+        if (intDetailQuantity <= int.Parse(param.Quantity))
+        {
+            a += 1; param.Chosen = a.ToString();
+            var _productName = await ProtectedSessionStore.GetAsync<string>("_productName");
+            var _totalChosenProducts = await ProtectedSessionStore.GetAsync<string>("_totalChosenProducts");
+            var _productPrice = await ProtectedSessionStore.GetAsync<string>("_productPrice");
+            var _productQty = await ProtectedSessionStore.GetAsync<string>("_productQty");
+            if (!string.IsNullOrEmpty(_totalChosenProducts) && !string.IsNullOrEmpty(_productName)
+                && !string.IsNullOrEmpty(_productPrice) && !string.IsNullOrEmpty(_productQty))
+            {
+                _productName += "||" + param.Name; _totalChosenProducts += "||" + param.Chosen;
+                _productPrice += "||" + param.Price; _productQty += "||" + param.Quantity;
+                await ProtectedSessionStore.SetAsync("_productName", _productName);
+                await ProtectedSessionStore.SetAsync("_totalChosenProducts", _totalChosenProducts);
+                await ProtectedSessionStore.SetAsync("_productPrice", _productPrice);
+                await ProtectedSessionStore.SetAsync("_productQty", _productQty);
+
+            }
+            else
+            {
+                _productName = param.Name; _productPrice = param.Price; _totalChosenProducts = param.Chosen;
+                _productQty = param.Quantity;
+                await ProtectedSessionStore.SetAsync("_productName", _productName);
+                await ProtectedSessionStore.SetAsync("_totalChosenProducts", _totalChosenProducts);
+                await ProtectedSessionStore.SetAsync("_productPrice", _productPrice);
+                await ProtectedSessionStore.SetAsync("_productQty", _productQty);
+            }
+            await JSRuntime.InvokeVoidAsync("displayswal", "Success", "Your product has been added successfully to cart." +
+                " Please checkout the cart or continue shopping");
+            ProcessAddDelete(param, "add"); StateHasChanged();
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "out of stocks");
+        }
+
+
+    }
+    public int Total = 0;
+    public int reload = 0;
+    public int RenderOnceMore = 0;
+    public ProductDetails[] details { get; set; }
+    public class ProductDetails
+    {
+        public string Name { get; set; }
+        public string Price { get; set; }
+        public string Description { get; set; }
+        public string Hyperlink { get; set; }
+        public string Chosen { get; set; }
+        public byte[] Image { get; set; }
+        public string Category { get; set; }
+        public string Seller { get; set; }
+        public string Warranty { get; set; }
+        public string Quantity { get; set; }
+        public int Index { get; set; }
+        public int InAddList { get; set; }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Welcome to Shopping cart!");
+
+        var userId = await ProtectedSessionStore.GetAsync<string>("UserId");
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var response = GetApiCall("GetProductDetails");
+            if (!string.IsNullOrEmpty(response))
+            {
+                var obj = JsonConvert.DeserializeObject<ProductDetails[]>(response);
+                if (obj != null)
+                {
+                    int j1 = 0;
+
+                    if (temp?.Count() > 0)
+                    { details = temp.ToArray(); }
+                    else
+                        details = obj;
+                    var _productName = await ProtectedSessionStore.GetAsync<string>("_productName");
+                    var _totalChosenProducts = await ProtectedSessionStore.GetAsync<string>("_totalChosenProducts");
+                    var _productPrice = await ProtectedSessionStore.GetAsync<string>("_productPrice");
+                    var _productQty = await ProtectedSessionStore.GetAsync<string>("_productQty");
+                    foreach (var item in details)
+                    {
+                        item.Index = j1; j1 += 1;
+                        //if (!string.IsNullOrEmpty(_productName) && _productName.Contains("||"))
+                        //{
+
+                        //    int c = 0;
+                        //    var splits = _productName.Split("||");
+                        //    c = splits.Where(x => x == item.Name).Count();
+                        //    item.InAddList = c;
+                        //    if (c > 0)
+                        //        await JSRuntime.InvokeVoidAsync("ChangeVisibility", "deletecart" + item.Index, "visible");
+                        //    else
+                        //        await JSRuntime.InvokeVoidAsync("ChangeVisibility", "deletecart" + item.Index, "hidden");
+                        //}
+                        //else if (!string.IsNullOrEmpty(_productName) && item.Name == _productName)
+                        //{
+                        //    item.InAddList = 1;
+                        //    await JSRuntime.InvokeVoidAsync("ChangeVisibility", "deletecart" + item.Index, "visible");
+                        //}
+                        //else if (temp?.Count() > 0)
+                        //{
+                        //    item.InAddList = 0;
+                        //    await JSRuntime.InvokeVoidAsync("ChangeVisibility", "deletecart" + item.Index, "hidden");
+                        //}
+
+                    }
+                    if (RenderOnceMore != 1)
+                    { StateHasChanged(); RenderOnceMore += 1; }
+
+                }
+            }
+
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "You are not " +
+                "authorized to view this page. Please login to access the page");
+            nav.NavigateTo("/Users/Login");
+        }
+
+
+
+
+    }
+    private string GetApiCall(string methodname)
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+
+            var response = httpClient.GetAsync(config.GetValue<string>("ApiUrl") + methodname).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            return ans;
+        }
+    }
+    private string PostApiCall(string methodname, object user)
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(user);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = httpClient.PostAsync(config.GetValue<string>("ApiUrl") + methodname, httpContent).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            return ans;
+        }
+    }
+
+}

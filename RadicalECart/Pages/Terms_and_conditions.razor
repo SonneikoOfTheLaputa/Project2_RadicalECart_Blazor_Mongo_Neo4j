@@ -1,0 +1,65 @@
+﻿@page "/Terms_and_conditions"
+@using iTextSharp.text.pdf
+@using iTextSharp.text.pdf.parser
+@using System.Text
+@inject NavigationManager nav
+@inject IJSRuntime JSRuntime
+<style>
+    body {
+        background-color: #ffffff
+    }
+
+    .centerdiv {
+        margin: auto;
+        width: 60%;
+        border: 3px solid #73AD21;
+        padding: 10px;
+    }
+</style>
+<div class="centerdiv">
+    @foreach (var item in Final)
+    {
+        <p>@item</p><br />
+    }
+    <TelerikButton OnClick="home">Go home</TelerikButton>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Terms and conditions"); ;
+    }
+    private void home()
+    {
+        nav.NavigateTo("Index");
+    }
+    [Parameter]
+    public List<string> Final { get; set; }
+    protected override void OnInitialized()
+    {
+        Initiate();
+        base.OnInitialized();
+    }
+    private void Initiate()
+    {
+        // string path= Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()));
+        List<string> finaltext = new List<string>();
+        string[] words;
+        string line;
+        PdfReader pdf = new PdfReader(@"C:\\Users\\Sonneiko-PC\\Downloads\termsandconditions.pdf");
+        int pagenum = pdf.NumberOfPages;
+        for (int i = 1; i <= pagenum; i++)
+        {
+            string text = PdfTextExtractor.GetTextFromPage(pdf, i, new LocationTextExtractionStrategy());
+
+            words = text.Split('\n');
+            for (int j = 0, len = words.Length; j < len; j++)
+            {
+                line = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(words[j]));
+                finaltext.Add(line);
+            }
+        }
+        Final = finaltext.Where(x => x != null && !string.IsNullOrEmpty(x) &&
+        !string.IsNullOrWhiteSpace(x)).ToList();
+    }
+}

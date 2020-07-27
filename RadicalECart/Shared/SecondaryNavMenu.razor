@@ -1,0 +1,78 @@
+﻿<TelerikMenu Data="@MenuItems"
+             UrlField="@nameof(MenuItem.Page)"
+             ItemsField="@nameof(MenuItem.SubSectionList)"
+             TextField="@nameof(MenuItem.Section)">
+</TelerikMenu>
+
+@code {
+    public List<MenuItem> MenuItems { get; set; }
+
+    public class MenuItem
+    {
+        public string Section { get; set; }
+        public string Page { get; set; }
+        public List<MenuItem> SubSectionList { get; set; }
+    }
+      
+        protected override void OnInitialized()
+        {
+            MenuItems = new List<MenuItem>()
+{ new MenuItem
+            {
+                Section="Products page",
+                Page="/OnlineShopping/Default"
+            },
+            new MenuItem
+            {
+                Section="About",
+                Page="/About"
+            },
+            new MenuItem
+            {
+                Section="Complaint section",
+                Page="/Complaints"
+            },
+            new MenuItem
+            {
+                Section="Terms and conditions",
+                Page="/Terms_and_conditions"
+            },
+
+            new MenuItem
+            {
+                Section="Contacts",
+                Page="/Contacts"
+            },
+             new MenuItem
+            {
+                Section="Deactivate account",
+                Page="/Deactivate"
+            },
+             new MenuItem
+            {
+                Section="Reset password",
+                Page="/ForgotPassword"
+            },
+             new MenuItem
+            {
+                Section="Logout",
+                Page="/Users/Logout"
+            },
+             new MenuItem
+            {
+                Section="Cart",
+                Page="/OnlineShopping/CheckOutCart"
+            },
+             new MenuItem
+            {
+                Section="Track order",
+                Page="/OnlineShopping/Track"
+            },
+             new MenuItem
+            {
+                Section="Order history",
+                Page="/OnlineShopping/PreviousOrders"
+            }
+        };
+        }
+}

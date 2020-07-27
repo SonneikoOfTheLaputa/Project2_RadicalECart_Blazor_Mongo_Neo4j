@@ -1,0 +1,133 @@
+﻿<TelerikMenu Data="@MenuItems"
+             UrlField="@nameof(MenuItem.Page)"
+             ItemsField="@nameof(MenuItem.SubSectionList)"
+             TextField="@nameof(MenuItem.Section)">
+</TelerikMenu>
+
+@code {
+
+    public List<MenuItem> MenuItems { get; set; }
+
+    public class MenuItem
+    {
+        public string Section { get; set; }
+        public string Page { get; set; }
+        public List<MenuItem> SubSectionList { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        MenuItems = new List<MenuItem>()
+{ new MenuItem
+            {
+                Section="Home",
+                Page="/Index"
+            },
+            new MenuItem
+            {
+                Section="About",
+                Page="/About"
+            },
+            new MenuItem
+            {
+                Section="Complaint section",
+                Page="/Complaints"
+            },
+            new MenuItem()
+            {
+                Section = "Products", // items that don't have a URL will not render links
+                SubSectionList = new List<MenuItem>()
+{
+                    new MenuItem()
+                    {
+                        Section = "Mobiles",
+                        Page = "Products/Mobiles"
+                    },
+                    new MenuItem()
+                    {
+                        Section = "Watches",
+                        Page = "Products/Watches"
+                    },
+                    new MenuItem()
+                    {
+                        Section = "Drones",
+                        Page = "Products/Drones"
+                    }
+                }
+            },
+            new MenuItem()
+            {
+                Section = "Users' section",
+                SubSectionList = new List<MenuItem>()
+{
+                    new MenuItem()
+                    {
+                        Section = "Login",
+                        Page = "/Users/Login"
+                    },
+                    new MenuItem()
+                    {
+                        Section = "Register",
+                        Page = "Users/Register"
+                    }
+                }
+            },
+            new MenuItem
+            {
+                Section="New Arrivals",
+                SubSectionList=new List<MenuItem>()
+{
+                    new MenuItem
+                    {
+                        Section="BlackBerry 23GA",
+                        Page="Arrivals/BlackBerry_23GA"
+                    },
+                    new MenuItem
+                    {
+                        Section="Titan Nitro",
+                        Page="Arrivals/Titan_Nitro"
+                    },
+                    new MenuItem
+                    {
+                        Section="Al Fajer L-10",
+                        Page="Arrivals/Al_Fajer_L_10"
+                    }
+                }
+            },
+            new MenuItem
+            {
+                Section="Terms and conditions",
+                Page="/Terms_and_conditions"
+            },
+
+            new MenuItem
+            {
+                Section="Contacts",
+                Page="/Contacts"
+            },
+             new MenuItem
+            {
+                Section="Deactivate account",
+                Page="/Deactivate"
+            },
+             new MenuItem
+            {
+                Section="Reset password",
+                Page="/ForgotPassword"
+            }
+             ,
+             new MenuItem
+            {
+                Section="My Profile",
+                Page="/Users/EditProfile"
+            },
+             new MenuItem
+            {
+                Section="Logout",
+                Page="/Users/Logout"
+            }
+        };
+
+        base.OnInitialized();
+    }
+}

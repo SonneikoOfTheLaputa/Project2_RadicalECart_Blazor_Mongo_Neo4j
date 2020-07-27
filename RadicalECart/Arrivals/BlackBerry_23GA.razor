@@ -1,0 +1,322 @@
+﻿@page "/Arrivals/BlackBerry_23GA"
+@using System.Net;
+@using System.Net.Mail;
+@using System.Text.RegularExpressions; 
+@inject IJSRuntime JSRuntime; 
+<style>
+    html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;background-color:white;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px;
+        display: flex;
+    }
+
+    .left-column {
+        width: 65%;
+        position: relative;
+    }
+
+    .right-column {
+        width: 35%;
+        margin-top: 60px;
+    }
+
+    .left-column img {
+        width: 80%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: all 0.3s ease;
+    }
+
+        .left-column img.active {
+            opacity: 1;
+        }
+
+    .product-description {
+        border-bottom: 1px solid #E1E8EE;
+        margin-bottom: 20px;
+    }
+
+        .product-description span {
+            font-size: 12px;
+            color: #358ED7;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .product-description h1 {
+            font-weight: 300;
+            font-size: 52px;
+            color: #43484D;
+            letter-spacing: -2px;
+        }
+
+        .product-description p {
+            font-size: 16px;
+            font-weight: 300;
+            color: #86939E;
+            line-height: 24px;
+        }
+
+    .product-color {
+        margin-bottom: 30px;
+    }
+
+    .color-choose div {
+        display: inline-block;
+    }
+
+    .color-choose input[type=&amp;quot;radio&amp;quot;] {
+        display: none;
+    }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;] + label span {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: -1px 4px 0 0;
+            vertical-align: middle;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;] + label span {
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
+        }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;]#red + label span {
+            background-color: #C91524;
+        }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;]#blue + label span {
+            background-color: #314780;
+        }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;]#black + label span {
+            background-color: #323232;
+        }
+
+        .color-choose input[type=&amp;quot;radio&amp;quot;]:checked + label span {
+            background-image: url(images/check-icn.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+    .cable-choose {
+        margin-bottom: 20px;
+    }
+
+        .cable-choose button {
+            border: 2px solid #E1E8EE;
+            border-radius: 6px;
+            padding: 13px 20px;
+            font-size: 14px;
+            color: #5E6977;
+            background-color: #fff;
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+            .cable-choose button:hover,
+            .cable-choose button:active,
+            .cable-choose button:focus {
+                border: 2px solid #86939E;
+                outline: none;
+            }
+
+    .cable-config {
+        border-bottom: 1px solid #E1E8EE;
+        margin-bottom: 20px;
+    }
+
+        .cable-config a {
+            color: #358ED7;
+            text-decoration: none;
+            font-size: 12px;
+            position: relative;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+            .cable-config a:before {
+                content: &amp;
+                quot;
+                ?&amp;
+                quot;
+                ;
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                border: 2px solid rgba(53, 142, 215, 0.5);
+                display: inline-block;
+                text-align: center;
+                line-height: 16px;
+                opacity: 0.5;
+                margin-right: 5px;
+            }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+    }
+
+        .product-price span {
+            font-size: 26px;
+            font-weight: 300;
+            color: #43474D;
+            margin-right: 20px;
+        }
+
+    .cart-btn {
+        display: inline-block;
+        background-color: #7DC855;
+        border-radius: 6px;
+        font-size: 16px;
+        color: #FFFFFF;
+        text-decoration: none;
+        padding: 12px 30px;
+        transition: all .5s;
+    }
+
+        .cart-btn:hover {
+            background-color: #64af3d;
+        }
+</style>
+<NavMenu></NavMenu><br />
+<main class="container">
+
+    <!-- Left Column / Headphones Image -->
+    <div class="left-column">
+        <img data-image="black" src="../css/packshot-key2-specs.jpg" alt="">
+    </div>
+
+
+    <!-- Right Column -->
+    <div class="right-column">
+
+        <!-- Product Description -->
+        <div class="product-description">
+            <span>Mobile</span>
+            <h1>Blackberry 23GA</h1>
+            <p>BlackBerry 23GA smartphone was launched in June 2018. The phone comes with a 4.50-inch touchscreen display with a resolution of 1080x1620 pixels at a pixel density of 434 pixels per inch (ppi). BlackBerry 23GA is powered by a 2.2GHz octa-core Qualcomm Snapdragon 660 processor. It comes with 4GB of RAM.</p>
+        </div>
+
+        <!-- Product Configuration -->
+        <div class="product-configuration">
+
+            <!-- Product Color -->
+            <div class="product-color">
+                <span>Color</span>
+
+                <div class="color-choose">
+
+                    <div>
+                        <input data-image="black" type="radio" id="black" name="color" value="black" checked>
+                        <label for="black"><span>Black</span></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Cable Configuration -->
+            <div class="cable-config">
+                <span>OS configuration</span>
+
+                <div class="cable-choose">
+                    <button @onclick="@(x=>ChooseType("Android"))">Android</button>
+                    <button @onclick="@(x=>ChooseType("Blackberry"))">Blackberry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Pricing -->
+        <div class="product-price">
+            <span>₹78000</span>
+            <a href="#" class="cart-btn" @onclick:preventDefault @onclick="@ModalPopUp">Notify the product</a>
+        </div>
+    </div>
+</main>
+<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Enter mail address</h4>
+            </div>
+            <div class="modal-body">
+              <input type="text" @bind-value="tomail" width="300" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" @onclick="@Notify">Submit</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    public string type = "";
+    public void ChooseType(string t)
+    {
+        type = t;
+    }
+    public async Task ModalPopUp()
+    {
+        await JSRuntime.InvokeVoidAsync("openModel1");
+    }
+    public string tomail = "";
+    public async Task Notify()
+    {
+
+        bool isEmail = Regex.IsMatch(tomail, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
+        if (isEmail) {
+            if (!string.IsNullOrEmpty(type)) {
+                var fromAddress = new MailAddress("mailme.radicalecarts@gmail.com");
+                var toAddress = new MailAddress(tomail);
+                const string fromPassword = "qwerty123@Q";
+                const string subject = "Blackberry 23GA subscription";
+                string b= "Thanks for subscribing to our new product - BlackBerry 23GA.<br/>Type : " + type + "<br/>Once its on-line, we will notify you.<br/><br/> Thanks for your patience.";
+                string body = b;
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+                };
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,IsBodyHtml=true
+                })
+                {
+                    smtp.Send(message);
+                    await JSRuntime.InvokeVoidAsync("displayswal", "Success", "mail has been sent to you. Please check");
+                }
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Please choose OS type");
+            }
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Invalid mail address");
+        }
+    }
+}

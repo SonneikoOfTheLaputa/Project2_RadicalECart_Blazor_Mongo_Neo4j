@@ -1,0 +1,42 @@
+﻿@page "/About"
+@inject IJSRuntime JSRuntime 
+<NavMenu></NavMenu><br />
+<style>
+    html,body{
+        background-color:white;
+    }
+    .table23 th,td{
+        padding:15px;
+    }
+</style>
+<div class="container" style="text-align: center">
+    <table class="table23" style="color:black;margin:0 auto" border="1">
+        <tr>
+            <th>Concept</th>
+            <th>Technology</th>
+        </tr>
+        <tr>
+            <td>Framework</td>
+            <td>Blazor</td>
+        </tr>
+        <tr>
+            <td>Users DB</td>
+            <td>Neo4j</td>
+        </tr>
+        <tr>
+            <td>Products DB</td>
+            <td>MongoDB</td>
+        </tr>
+        <tr>
+            <td>Front end</td>
+            <td>Telerik UI for Blazor</td>
+        </tr>
+    </table>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "About");
+    }
+}

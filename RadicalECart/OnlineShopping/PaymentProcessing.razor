@@ -1,0 +1,150 @@
+﻿@page "/OnlineShopping/PaymentProcessing"
+@inject NavigationManager nav
+@using Microsoft.AspNetCore.ProtectedBrowserStorage
+@inject IJSRuntime JSRuntime
+@inject ProtectedSessionStorage ProtectedSessionStore
+<style>
+    body {
+        background-color: white;
+    }
+
+    #loader {
+        width: 200px;
+        height: 200px
+    }
+
+    .pay {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+<div class="pay">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto;
+background: rgb(255, 255, 255);
+display: block; shape-rendering: auto;"
+         viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" id="loader">
+        <g transform="rotate(0 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(30 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(60 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(90 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(120 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(150 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(180 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(210 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(240 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(270 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.16666666666666666s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(300 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.08333333333333333s" repeatCount="indefinite" />
+            </rect>
+        </g>
+        <g transform="rotate(330 50 50)">
+            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="#fe718d">
+                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite" />
+            </rect>
+        </g>
+    </svg><br />
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        <div>
+            <b><strong><input type="text" style="width:450px;border: 0px none;" @bind-value="@Text" /></strong></b>
+        </div>
+    }
+</div>
+@code { public int RenderOnceMore = 0;
+    public string Text { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Your payment is getting processed...");
+        if (RenderOnceMore == 2)
+            System.Threading.Thread.Sleep(5000);
+        if (RenderOnceMore == 3)
+        { System.Threading.Thread.Sleep(2000);
+            await ProtectedSessionStore.SetAsync("isPaymentProcess", "done");
+        }
+        var value = await ProtectedSessionStore.GetAsync<string>("isPaymentProcess");
+        if(string.IsNullOrEmpty( await ProtectedSessionStore.GetAsync<string>("UserId")))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Not authorized. Please login.");
+            nav.NavigateTo("/Users/Login");
+        }
+        else if (string.IsNullOrEmpty(value))
+        {
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error", "Please enter card details");
+            nav.NavigateTo("/OnlineShopping/CheckOutCart");
+        }
+        else if (value.Contains("done"))
+        {
+
+            await JSRuntime.InvokeVoidAsync("displayswal", "Success", "Payment done successfully.");
+            nav.NavigateTo("/OnlineShopping/OrderCompletion");
+        }
+        else
+        {
+            if (RenderOnceMore == 1)
+            {
+                Text = "Payment is getting processed. Please wait....";
+                //  System.Threading.Thread.Sleep(5000);
+
+
+
+
+            }
+            if (RenderOnceMore == 2)
+            {
+                Text = "Payment completed successfully. Getting redirected to order page.";
+                // System.Threading.Thread.Sleep(2000);
+
+            }
+            if (RenderOnceMore == 2) { StateHasChanged(); RenderOnceMore += 1; }
+            if (RenderOnceMore == 1) { StateHasChanged(); RenderOnceMore += 1; }
+        }
+        if (RenderOnceMore == 0) { StateHasChanged(); RenderOnceMore += 1; }
+
+    }
+
+}

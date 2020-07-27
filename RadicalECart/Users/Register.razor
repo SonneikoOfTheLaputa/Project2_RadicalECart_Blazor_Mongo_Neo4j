@@ -1,0 +1,320 @@
+﻿@page "/Users/Register"
+
+@inject IJSRuntime JSRuntime
+@using Newtonsoft.Json
+@using RadicalECart.Data
+@inject NavigationManager nav
+@inject IHttpClientFactory Http
+@using System.Net;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Web
+@using System.Text
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+<style>
+    body {
+        background-color: white;
+    }
+
+    .checkusernamebtn {
+        width: 150px;
+        height: 30px;
+        text-align: center;
+    }
+</style>
+<div style="text-align:center">
+    <div class="box">
+        <form class="login-form">
+            <h1>Register</h1>
+            <EditForm OnValidSubmit="@HandleValidSubmit" Model="@user1">
+
+                <InputText id="usernameid" type="text" @bind-Value="@user1.UserId" placeholder="Username"></InputText>
+                &nbsp;<button class="checkusernamebtn" type="button" @onclick="(()=>CheckUserName(true))">Check username</button>
+
+                <InputText type="text" @bind-Value="@user1.FirstName" placeholder="Firstname"></InputText>
+                <InputText type="text" @bind-Value="@user1.LastName" placeholder="Lastname"></InputText>
+                <InputText type="text" @bind-Value="@user1.Age" placeholder="Age"></InputText>
+                <InputText type="text" @bind-Value="@user1.Email" placeholder="Email"></InputText>
+                <InputText type="text" @bind-Value="@user1.MobileNumber" placeholder="Mobile number"></InputText>
+                &nbsp;<button class="checkusernamebtn" type="button"
+                              @onclick="CheckMobileNumber">
+                    Check mobile number
+                </button>
+
+                <InputText type="text" @bind-Value="@user1.Address1" placeholder="Address Line 1"></InputText>
+                <InputText type="text" @bind-Value="@user1.Address2" placeholder="Address Line 2"></InputText>
+
+                <TelerikDropDownList Data="@myCtriesDdlModel" TextField="MyTextField" ValueField="MyValueField"
+                                     @bind-Value="@coutryDdlValue" OnChange="populatecities">
+                </TelerikDropDownList>
+                <TelerikDropDownList @ref="cityddl" Data="@myCitiesDdlModel" TextField="MyTextField" ValueField="MyValueField" DefaultText="--select city--"
+                                     @bind-Value="@cityDdlValue">
+                </TelerikDropDownList>
+                <InputText type="password" @bind-Value="@user1.Password" placeholder="Password"></InputText>
+                <InputText type="password" @bind-Value="@user1.ConfirmPassword" placeholder="Confirm password"></InputText>
+                <InputText type="text" @bind-Value="@user1.AreaCode" placeholder="Area code"></InputText>
+                <InputText type="text" @bind-Value="@user1.PinCode" placeholder="Pin code"></InputText>
+                <button type="submit" class="loginbtn">Register</button>
+                <div id="formsummary" style="color:red">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+            </EditForm>
+        </form>
+
+    </div>
+
+</div>
+
+@code {
+    private RegisterModel user1 = new RegisterModel();
+    [Parameter]
+    public bool mobileErrorBool { get; set; } = false;
+    [Parameter]
+    public bool userIdErrorBool { get; set; } = false;
+    Telerik.Blazor.Components.TelerikDropDownList<citiesDdlModel, string> cityddl;
+    List<CitiesList> citytemplist = new List<CitiesList>();
+
+    public void populatecities()
+    {
+        var chosenCountry = coutryDdlValue;
+        var objectId = myCtriesDdlModel.Where(x => x.MyValueField == chosenCountry).FirstOrDefault().objectId;
+        string ans = "";
+        string where = HttpUtility.UrlEncode("{" +
+           "    \"country\": {" +
+           "        \"__type\": \"Pointer\"," +
+           "        \"className\": \"Continentscountriescities_Country\"," +
+           "        \"objectId\": \"" + objectId + "\"" +
+           "    }" +
+           "}", Encoding.UTF8);
+        using (var httpClient = new HttpClient())
+        {
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://parseapi.back4app.com/classes/Continentscountriescities_City?keys=name,country&where=" + where),
+                Method = HttpMethod.Get,
+            };
+            request.Headers.Clear();
+            request.Headers.Add("X-Parse-Application-Id", "beYHRBIS2kPmRXSMvlq7eYI5N7zLlbLxSJbMZDY0");
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("X-Parse-REST-API-Key", "eUPDC7NtnH5hw928cTbx113L3nxTGqDeYnr39Fmw");
+            var response = httpClient.SendAsync(request).Result;
+            if (response.StatusCode == HttpStatusCode.OK
+                )
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+                var objres = JsonConvert.DeserializeObject<CitiesListWrapper>(ans);
+                List<CitiesList> citytemplist = objres.results.ToList();
+
+                citytemplist.Add(new CitiesList { name = "--select country--", objectId = "" });
+                myCitiesDdlModel = citytemplist.Select(x => new citiesDdlModel
+                {
+                    MyTextField = x.name,
+                    MyValueField = x.name,
+                    objectId = x.objectId
+                });
+            }
+        }
+    }
+    private string coutryDdlValue { get; set; } = "--select country--";
+    private string cityDdlValue { get; set; } = "--select city--";
+    public IEnumerable<countriesDdlModel> myCtriesDdlModel = null;
+    public IEnumerable<citiesDdlModel> myCitiesDdlModel = null;
+    public class countriesDdlModel
+    {
+        public string objectId { get; set; }
+        public string MyValueField { get; set; }
+        public string MyTextField { get; set; }
+    }
+    public class citiesDdlModel
+    {
+        public string objectId { get; set; }
+        public string MyValueField { get; set; }
+        public string MyTextField { get; set; }
+    }
+    public async void CheckUserName(bool a)
+    {
+        var text = user1.UserId;
+        string ans = ApiCall("CheckUserId", text);
+        bool.TryParse(ans, out bool ans1);
+        if (ans1)
+        {
+            userIdErrorBool = true;
+
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                 "User id is already taken. Please choose some other user id");
+        }
+        else
+        {
+
+            userIdErrorBool = false; if (a) await JSRuntime.InvokeVoidAsync("displayswal", "Correct",
+                     "This userId is not in our database. Go ahead"); ;
+        }
+    }
+    public async void CheckMobileNumber()
+    {
+        var text = user1.MobileNumber;
+        string ans = ApiCall("CheckMobileNumber", text);
+        bool.TryParse(ans, out bool ans1);
+        if (ans1)
+        {
+            mobileErrorBool = true;
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                   "This mobile number is already taken");
+        }
+        else
+        {
+            mobileErrorBool = false; await JSRuntime.InvokeVoidAsync("displayswal", "Correct",
+                      "This number is not in our database. Go ahead");
+        }
+    }
+
+    public void GoRegister()
+    {
+        nav.NavigateTo("/Users/Register");
+    }
+    public async void HandleValidSubmit()
+    {
+        string ans = "";
+
+        if (cityDdlValue != "--select city--")
+        {
+            if (coutryDdlValue != "--select country--")
+            {
+                if (!mobileErrorBool)
+                {
+                    if (!userIdErrorBool)
+                    {
+                        CheckUserName(false);
+                        if (!userIdErrorBool)
+                        {
+                            user1.Country = coutryDdlValue;
+                            user1.City = cityDdlValue;
+                            var user = (object)user1;
+                            ans = ApiCall("RegisterUser", user);
+                            bool.TryParse(ans, out bool ans1);
+                            if (ans1)
+                            {
+                                await JSRuntime.InvokeVoidAsync("displayswal", "Success",
+                              "User registered successfully");
+                            }
+                        }
+                        else
+                            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                              "Invalid username");
+                    }else
+                    await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                          "Invalid username");
+                }
+                else
+                await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                            "Invalid mobile number");
+            }
+            else
+                await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                          "Invalid Country");
+
+        }
+        else
+            await JSRuntime.InvokeVoidAsync("displayswal", "Error",
+                      "Invalid city");
+    }
+    private string ApiCall(string methodname, object user)
+    {
+        string ans = "";
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var myContent = JsonConvert.SerializeObject(user);
+
+            var httpContent = new StringContent(myContent, Encoding.UTF8, "application/json");
+
+            var response = httpClient.PostAsync(config.GetValue<string>("ApiUrl") + methodname, httpContent).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            return ans;
+        }
+    }
+    public class CountriesListWrapper
+    {
+        public CountriesList[] results { get; set; }
+    }
+    public class CountriesList
+    {
+        public string objectId { get; set; }
+        public string name { get; set; }
+    }
+    public class CitiesListWrapper
+    {
+        public CitiesList[] results { get; set; }
+    }
+    public class CitiesList
+    {
+        public string objectId { get; set; }
+        public string name { get; set; }
+    }
+    protected override void OnInitialized()
+    {
+        string ans = "";
+        CountriesListWrapper objres = null;
+        using (var httpClient = new HttpClient())
+        {
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://parseapi.back4app.com/classes/Continentscountriescities_Country?keys=name"),
+                Method = HttpMethod.Get,
+            };
+            request.Headers.Clear();
+            request.Headers.Add("X-Parse-Application-Id", "beYHRBIS2kPmRXSMvlq7eYI5N7zLlbLxSJbMZDY0");
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("X-Parse-REST-API-Key", "eUPDC7NtnH5hw928cTbx113L3nxTGqDeYnr39Fmw");
+            var response = httpClient.SendAsync(request).Result;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                ans = response.Content.ReadAsStringAsync().Result;
+                objres = JsonConvert.DeserializeObject<CountriesListWrapper>(ans);
+
+                //myCtriesDdlModel = myCtriesDdlModel.Concat("--select ccountry--");
+                List<CountriesList> templist = objres.results.ToList();
+
+                templist.Add(new CountriesList { name = "--select country--" });
+                myCtriesDdlModel = templist.Select(x => new countriesDdlModel
+                {
+                    MyTextField = x.name,
+                    MyValueField = x.name,
+                    objectId = x.objectId
+                });
+                //myCtriesDdlModel = templist.AsEnumerable();
+
+                List<citiesDdlModel> tempcitiesddlonload = new List<citiesDdlModel>();
+                tempcitiesddlonload.Add(new citiesDdlModel
+                {
+                    MyTextField = "--select city--",
+                    MyValueField = "--select city--",
+                    objectId = ""
+                });
+                myCitiesDdlModel = tempcitiesddlonload.AsEnumerable();
+
+            }
+            else
+            {
+                ans = "Some error occured." + response.StatusCode;
+            }
+            //return ans;
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Register here"); ;
+    }
+}

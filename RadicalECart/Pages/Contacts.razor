@@ -1,0 +1,17 @@
+﻿@inject IJSRuntime JSRuntime
+@page "/Contacts"
+<style>
+    html,body{
+        background-color:white;
+    }
+</style>
+<NavMenu></NavMenu><br />
+
+<h3 style="text-align:center"><a href="https://github.com/users/SonneikooftheLaputa/">Contact me @@Github</a></h3>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("setTitle", "Contacts");
+    }
+}
