@@ -1,0 +1,13 @@
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\LogEntries.deps.json
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\LogEntries.dll
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\LogEntries.pdb
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.AssemblyInfoInputs.cache
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.AssemblyInfo.cs
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.dll
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.pdb
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\System.Configuration.dll
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\System.Security.dll
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\System.Configuration.xml
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\bin\Debug\netstandard2.0\System.Security.xml
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.csproj.CopyComplete
+C:\Users\Sonneiko-PC\source\repos\Radical_Ecart_UserManagementService\LogEntries\obj\Debug\netstandard2.0\LogEntries.csproj.CoreCompileInputs.cache

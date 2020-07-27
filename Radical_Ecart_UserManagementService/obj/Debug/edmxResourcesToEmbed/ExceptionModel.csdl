@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExceptionDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="exception">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="ExceptionMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedDateTime" Type="DateTime" Precision="3" />
+    <Property Name="LineNumber" Type="Int32" />
+    <Property Name="InnerExceptionMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="MethodName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Id" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="ExceptionDatabaseEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="exceptions" EntityType="Self.exception" />
+    <FunctionImport Name="ExceptionLog">
+      <Parameter Name="exmessage" Mode="In" Type="String" />
+      <Parameter Name="filename" Mode="In" Type="String" />
+      <Parameter Name="createddatetime" Mode="In" Type="DateTime" />
+      <Parameter Name="lineno" Mode="In" Type="Int32" />
+      <Parameter Name="inner" Mode="In" Type="String" />
+      <Parameter Name="methodname" Mode="In" Type="String" />
+      <Parameter Name="id" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+</Schema>
